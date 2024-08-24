@@ -42,20 +42,20 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#252525] px-10 py-[60px] flex flex-col gap-10 text-[#E1D0D0]">
+    <footer className="bg-[#252525] md:px-10 px-3 py-[30px] md:py-[60px] flex flex-col gap-10 text-[#E1D0D0]">
       <div className="flex lg:flex-row flex-col gap-[50px]">
-        <div className="grid grid-cols-4 gap-8 w-full lg:w-[65%]">
+        <div className="grid grid-cols-4 md:gap-8 gap-4 w-full lg:w-[65%]">
           <div>
             <Logo white />
           </div>
 
           {footerLinks.map((column, index) => (
             <div key={index}>
-              <h3 className="font-semibold mb-3 text-[7px] md:text-sm">{column.header}</h3>
+              <h3 className="font-semibold mb-3 text-[10px] md:text-sm">{column.header}</h3>
               <ul className="space-y-2">
                 {column.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link href={link.href} className="hover:underline text-[9px] md:text-sm">
+                    <Link href={link.href} className="hover:underline text-[10px] md:text-sm">
                       {link.text}
                     </Link>
                   </li>
@@ -68,7 +68,7 @@ export default function Footer() {
         <div className="flex lg:w-[40%] justify-end">
           <div className="flex flex-col gap-3 items-start w-[75%]">
             <h2 className="text-[14px] font-bold">Subscribe</h2>
-            <p className="text-[9px] md:text-[12px]">
+            <p className="text-[10px] md:text-[12px]">
               Join our newsletter to stay up to date on features and releases.
             </p>
             <div className="flex items-center gap-2 w-full">
@@ -80,13 +80,13 @@ export default function Footer() {
                 Subscribe
               </Button>
             </div>
-            <p className="text-[9px] md:text-[12px]">
+            <p className="text-[10px] md:text-[12px]">
               By subscribing you agree to with our Privacy Policy and provide
               consent to receive updates from our company.
             </p>
 
             <p className="text-[14px] font-bold">Download Our App </p>
-            <p className="text-[9px] md:text-[12px]">
+            <p className="text-[10px] md:text-[12px]">
               Download our app and get 15% Discount on your first order
             </p>
             <div className="flex gap-4 mt-2">
@@ -111,12 +111,14 @@ export default function Footer() {
         <hr className="w-full mb-4" />
         <div className="flex md:flex-row flex-col justify-between items-center gap-2">
           <div className="flex md:flex-row flex-col items-center gap-3 text-sm">
-            <p className="text-[9px] md:text-[12px]"> © 2023 Takeoff Trade. All rights reserved.</p>
-            <Link className="text-[9px] md:text-[12px]" href={"/privacy-policy"}>Privacy Policy</Link>
-            <Link className="text-[9px] md:text-[12px]" href={"/terms-of-service"}>Terms of Service</Link>
-            <Link className="text-[9px] md:text-[12px]" href={"/cookies-settings"}>Cookies Settings</Link>
-          </div>
-          <div className="flex items-center gap-4 ">
+            <p className="text-[10px] md:text-[12px]"> © 2023 Takeoff Trade. All rights reserved.</p>
+            <div className="flex  items-center gap-3 text-sm">
+            <Link className="text-[10px] md:text-[12px]" href={"/privacy-policy"}>Privacy Policy</Link>
+            <Link className="text-[10px] md:text-[12px]" href={"/terms-of-service"}>Terms of Service</Link>
+            <Link className="text-[10px] md:text-[12px]" href={"/cookies-settings"}>Cookies Settings</Link>
+            </div>
+            </div>
+            <div className="flex items-center gap-4 ">
             <FaFacebook className="w-4 h-4" />
             <FaInstagram className="w-4 h-4" />
             <FaXTwitter className="w-4 h-4" />

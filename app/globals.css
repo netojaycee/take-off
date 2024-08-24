@@ -67,3 +67,12 @@
     @apply bg-background text-foreground;
   }
 }
+.carousel .control-dots {
+  position: absolute;
+  bottom: 50px !important;
+  margin: 10px 0;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+}
