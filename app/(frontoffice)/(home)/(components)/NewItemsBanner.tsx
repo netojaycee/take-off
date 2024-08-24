@@ -13,36 +13,39 @@ export default function NewItemsBanner() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 lg:h-[300px] w-full justify-around">
           <Image
             src="/Frame1.png"
             alt=""
-            className=""
+            className="lg:w-full lg:h-full lg:object-fill"
             width={370}
             height={495}
           />
           <Image
             src="/Frame2.png"
             alt=""
-            className=""
+            className="lg:w-full lg:h-full lg:object-fill"
             width={370}
             height={495}
           />
           <Image
             src="/Frame3.png"
             alt=""
-            className="hidden md:block"
+            className="hidden md:block lg:w-full lg:h-full lg:object-fill"
             width={370}
             height={495}
           />
         </div>
-        <Image
-          src="/Frame4.png"
-          alt=""
-          className=""
-          width={1160}
-          height={495}
-        />
+        <div className="lg:h-[300px] w-full">
+  <Image
+    src="/Frame4.png"
+    alt=""
+    className="wlg:w-full lg:h-full lg:object-fill"
+    width={1160}
+    height={495}
+  />
+</div>
+
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export default function NewItemsProducts() {
       <div className="flex justify-between gap-3">
       <ProductCard />
       <ProductCard />
-      <ProductCard />
+      {/* <ProductCard /> */}
       <ProductCard />
       </div>
     </div>
