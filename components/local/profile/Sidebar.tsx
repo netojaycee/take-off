@@ -57,13 +57,57 @@ export default function Sidebar() {
             Add Items
           </Link>
         </li>
+        <li>
+          <Link
+            href="#"
+            className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
+          >
+            Add Category
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="#"
+            className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
+          >
+            New Users
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="#"
+            className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
+          >
+            Dispute
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="#"
+            className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
+          >
+            Create SubAccount(payment)
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="#"
+            className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
+          >
+            All Users
+          </Link>
+        </li>
       </ul>
 
       <Separator className="w-full my-10" />
 
       <ul className="space-y-6">
-        <li className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md">Delete Account</li>
-        <li className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md">Log out</li>
+        <li className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md">
+          Delete Account
+        </li>
+        <li className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md">
+          Log out
+        </li>
       </ul>
     </div>
   );
