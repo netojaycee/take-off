@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,10 +20,6 @@ import {
 } from "@/components/ui/input-otp";
 import LoadingButton from "@/components/local/loadingButton";
 import ErrorMessage from "@/components/local/errorMessage";
-// import {
-//   handleResendVerificationCode,
-//   handleVerify,
-// } from "@/app/actions/authActions";
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,7 +32,7 @@ const otpSchema = z.object({
     .regex(/^\d{4}$/, "Invalid OTP format"),
 });
 
-export default function Verify() {
+function VerifyComponent() {
   const [globalError, setGlobalError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
@@ -72,20 +68,7 @@ export default function Verify() {
       const credentials = { email, otp, isReset };
 
       // const result = await handleVerify(credentials);
-      // if (!result.success) {
-      //   toast.error(result.message || "An error occurred during verification.");
-      //   setGlobalError(
-      //     result.message || "An error occurred during verification."
-      //   );
-      // } else {
-      //   toast.success("Verification successful!");
-      //   if (isReset) {
-      //     router.push(`/reset-password?email=${encodeURIComponent(email)}`);
-      //   } else {
-      //     router.push(`/confirmation?email=${encodeURIComponent(email)}`);
-      //   }
-      //   setGlobalError(""); // Clear previous errors
-      // }
+      // Handle verification logic here...
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred. Please try again.");
@@ -96,13 +79,8 @@ export default function Verify() {
   const handleResendVerification = async ({ email }: { email: string }) => {
     try {
       setLoading(true);
-      // const result = await handleResendVerificationCode({ email, isReset });
-      // setLoading(false);
-      // if (result.success) {
-      //   toast.success("Verification code resent successfully!");
-      // } else {
-      //   toast.error(result.message || "Failed to resend verification code.");
-      // }
+      // Handle resend logic here...
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       toast.error("An error occurred while resending the verification code.");
@@ -122,7 +100,7 @@ export default function Verify() {
             Verify your Email address{" "}
           </h2>
           <p className="text-[16px] text-gray-500 text-center w-[60%] mx-auto mt-5">
-            We have sent a verification code to optimusprime@gmail.com
+            We have sent a verification code to {email}
           </p>
         </div>
         {globalError && <ErrorMessage error={globalError} />}
@@ -181,5 +159,13 @@ export default function Verify() {
         </p>
       </div>
     </>
+  );
+}
+
+export default function Verify() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <VerifyComponent />
+    </Suspense>
   );
 }
