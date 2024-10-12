@@ -27,7 +27,7 @@ export default function BestSellingElec() {
               Shop Now
             </Button>
           </div>
-          <Image src="/magic.png" alt="" width={270} height={236} />
+          <Image src="/images/magic.png" alt="" width={270} height={236} />
         </div>
         <div className="grid grid-cols-2 gap-2 w-full lg:w-1/2">
           <div className="bg-[#F2F2F2] flex justify-between items-center  h-[140px] md:h-[120px] rounded-md">
@@ -43,7 +43,7 @@ export default function BestSellingElec() {
                 Shop Now
               </Button>
             </div>
-            <Image src="/headset.png" alt="" width={60} height={236} />
+            <Image src="/images/headset.png" alt="" width={60} height={236} />
           </div>
           <div className="bg-[#F2F2F2] flex justify-between items-center   h-[140px] md:h-[120px] rounded-md">
             <div className="pl-5 lg:pl-10 flex flex-col gap-1">
@@ -58,7 +58,7 @@ export default function BestSellingElec() {
                 Shop Now
               </Button>
             </div>
-            <Image src="/headset.png" alt="" width={60} height={236} />
+            <Image src="/images/headset.png" alt="" width={60} height={236} />
           </div>
 
           <div className="bg-[#F2F2F2] flex justify-between items-center   h-[140px] md:h-[120px] rounded-md">
@@ -74,7 +74,7 @@ export default function BestSellingElec() {
                 Shop Now
               </Button>
             </div>
-            <Image src="/headset.png" alt="" width={60} height={236} />
+            <Image src="/images/headset.png" alt="" width={60} height={236} />
           </div>
 
           <div className="bg-[#F2F2F2] flex justify-between items-center   h-[140px] md:h-[120px] rounded-md">
@@ -90,7 +90,7 @@ export default function BestSellingElec() {
                 Shop Now
               </Button>
             </div>
-            <Image src="/headset.png" alt="" width={60} height={236} />
+            <Image src="/images/headset.png" alt="" width={60} height={236} />
           </div>
         </div>
       </div>{" "}

@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
 import { FaAngleRight } from "react-icons/fa";
+import Hero from "../(home)/(components)/Hero";
 
 export default function Products() {
   return (
     <>
+    <Hero />
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-6">
         {/* Left Sidebar */}
         <div className="w-full md:w-1/4 md:flex flex-col gap-4 hidden">
@@ -93,15 +95,13 @@ export default function Products() {
 
             <div className="md:hidden block">
               <select className="border rounded px-2 py-1">
-              <option value="">Filter</option>
+                <option value="">Filter</option>
                 <option value="popular">Popular</option>
                 <option value="newest">Newest</option>
                 <option value="low-to-high">Price: Lowest to Highest</option>
                 <option value="high-to-low">Price: Highest to Lowest</option>
               </select>
             </div>
-    
-
 
             <div className="flex items-center gap-2">
               <span className="md:text-sm">Sort by:</span>
@@ -115,20 +115,13 @@ export default function Products() {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             {/* Placeholder Product Cards */}
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+            {Array.from({ length: 9 }).map((_, index) => (
+              <div key={index}>
+                <ProductCard />
+              </div>
+            ))}
           </div>
 
           {/* Pagination */}

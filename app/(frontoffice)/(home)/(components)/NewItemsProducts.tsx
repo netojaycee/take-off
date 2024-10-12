@@ -13,11 +13,12 @@ export default function NewItemsProducts() {
         </Link>
       </div>
 
-      <div className="flex justify-between gap-3">
-      <ProductCard />
-      <ProductCard />
-      {/* <ProductCard /> */}
-      <ProductCard />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div key={index}>
+            <ProductCard />
+          </div>
+        ))}
       </div>
     </div>
   );

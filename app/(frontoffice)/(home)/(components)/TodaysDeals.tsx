@@ -26,7 +26,7 @@ export default function TodaysDeals() {
               Shop Now
             </Button>
           </div>
-          <Image src="/generator.png" alt="" width={270} height={236} />
+          <Image src="/images/generator.png" alt="" width={270} height={236} />
         </div>
 
         <div className="bg-[#8AB9CD] flex justify-between w-full lg:w-1/2 pt-10 h-[240px] rounded-md">
@@ -39,7 +39,7 @@ export default function TodaysDeals() {
               Shop Now
             </Button>
           </div>
-          <Image src="/juicer.png" alt="" width={270} height={236} />
+          <Image src="/images/juicer.png" alt="" width={270} height={236} />
         </div>
       </div>
     </div>
