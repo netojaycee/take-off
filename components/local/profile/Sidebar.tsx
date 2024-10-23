@@ -4,9 +4,9 @@ import React from "react";
 
 export default function Sidebar() {
   return (
-    <div className="p-4 border rounded-lg text-left ">
-      <h3 className="font-semibold text-[24px] pl-2 mb-5">My Account</h3>
-      <ul className="space-y-6">
+    <div className="border rounded-lg text-left w-full">
+      <h3 className="font-semibold text-[24px] pl-4 mb-5">My Account</h3>
+      <ul className="space-y-5">
         <li>
           {" "}
           <Link
@@ -51,7 +51,7 @@ export default function Sidebar() {
         </li>
         <li>
           <Link
-            href="#"
+            href="/add-items"
             className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
           >
             Add Items
@@ -86,7 +86,7 @@ export default function Sidebar() {
             href="#"
             className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
           >
-            Create SubAccount(payment)
+            Create Wallet
           </Link>
         </li>
         <li>

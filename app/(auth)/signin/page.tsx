@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Loader } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LoadingButton from "@/components/local/loadingButton";
@@ -19,64 +20,61 @@ import ErrorMessage from "@/components/local/errorMessage";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-
-const registerSchema = z
-  .object({
-    name: z
-      .string({ required_error: "name is required" })
-      .min(1, "Name is required"),
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Invalid email address"),
-    password: z
-      .string({ required_error: "Password is required" })
-      .min(6, "Password must be at least 6 characters long"),
-    confirmPassword: z
-      .string({
-        required_error: "Confirm Password is required",
-      })
-      .min(6, "Confirm password must be at least 6 characters long"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+import { useLoginMutation } from "@/redux/appData";
+import { loginSchema } from "@/lib/zod";
+import { jwtDecode } from "jwt-decode";
 
 export default function Signin() {
   const [globalError, setGlobalError] = useState<string>("");
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
+  const [
+    login,
+    {
+      isLoading: isLoadingLogin,
+      isSuccess: isSuccessLogin,
+      isError: isErrorLogin,
+      error: errorLogin,
+    },
+  ] = useLoginMutation();
+
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    setGlobalError(""); // Reset global error before submission
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    setGlobalError("");
     try {
-      console.log(values);
-      //   const result = await handleRegister(values);
-
-      //   if (result?.success === false) {
-      //     toast.error(result.message);
-      //     setGlobalError(result.message); // Display error message
-      //   } else {
-      //     toast.success("Registration successful!");
-      //     const email = result.email || ""; // Provide a default value
-      //     router.push(
-      //       `/verify?email=${encodeURIComponent(email)}&action=register`
-      //     );
-      //   }
+      const result = await login(values);
+      // console.log(result);
+      // const decodedToken = jwtDecode(result.data.token);
+      // console.log(decodedToken)
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
       console.error("An error occurred:", error);
     }
   };
+
+  React.useEffect(() => {
+    if (isSuccessLogin) {
+      toast.success("Login successful!");
+      router.push("/");
+    } else if (isErrorLogin) {
+      if ("data" in errorLogin && typeof errorLogin.data === "object") {
+        const errorMessage = (errorLogin.data as { message?: string })?.message;
+        setGlobalError(errorMessage || "Login failed.");
+        toast.error(errorMessage || "Login failed.");
+      } else {
+        setGlobalError("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  }, [isSuccessLogin, isErrorLogin, errorLogin, router]);
 
   return (
     <>
@@ -132,17 +130,29 @@ export default function Signin() {
                 )}
               />
             </div>
-            <LoadingButton
-              pending={form.formState.isSubmitting}
-              text="Log in"
-            />
+            <div className="w-full">
+              {isLoadingLogin ? (
+                <Button
+                  disabled
+                  className="flex items-center justify-center gap-1 w-full"
+                  type="submit"
+                >
+                  <span>Please wait</span>
+                  <Loader className="animate-spin" />
+                </Button>
+              ) : (
+                <Button className="w-full" type="submit">
+                  Sign In
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
         <div className="flex items-center justify-between">
-          <Separator className="w-[40%]"/>
+          <Separator className="w-[40%]" />
 
           <p className="text-sm text-gray-500 text-center block my-2">or</p>
-          <Separator className="w-[40%]"/>
+          <Separator className="w-[40%]" />
         </div>
         <form className="w-full flex flex-col gap-2">
           <Button variant="outline" className="w-full" type="submit">

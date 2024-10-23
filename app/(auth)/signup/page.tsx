@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,37 +14,35 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import LoadingButton from "@/components/local/loadingButton";
 import ErrorMessage from "@/components/local/errorMessage";
+import { useRegisterMutation } from "@/redux/appData";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { registerSchema } from "@/lib/zod";
+import { Loader } from "lucide-react";
+import jwt from "jsonwebtoken";
 
-const registerSchema = z
-  .object({
-    name: z
-      .string({ required_error: "name is required" })
-      .min(1, "Name is required"),
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Invalid email address"),
-    password: z
-      .string({ required_error: "Password is required" })
-      .min(6, "Password must be at least 6 characters long"),
-    confirmPassword: z
-      .string({
-        required_error: "Confirm Password is required",
-      })
-      .min(6, "Confirm password must be at least 6 characters long"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+export interface DecodedToken {
+  email: string;
+  action: string;
+  token: string;
+}
 
 export default function Signup() {
   const [globalError, setGlobalError] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   const router = useRouter();
+
+  const [
+    register,
+    {
+      isLoading: isLoadingRegister,
+      isSuccess: isSuccessRegister,
+      isError: isErrorRegister,
+      error: errorRegister,
+    },
+  ] = useRegisterMutation();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -58,25 +56,46 @@ export default function Signup() {
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     setGlobalError(""); // Reset global error before submission
     try {
-      console.log(values);
-      //   const result = await handleRegister(values);
-
-      //   if (result?.success === false) {
-      //     toast.error(result.message);
-      //     setGlobalError(result.message); // Display error message
-      //   } else {
-      //     toast.success("Registration successful!");
-      //     const email = result.email || ""; // Provide a default value
-      //     router.push(
-      //       `/verify?email=${encodeURIComponent(email)}&action=register`
-      //     );
-      //   }
+      const result = await register(values);
+      // console.log(result);
+      setToken(result?.data?.id);
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
       console.error("An error occurred:", error);
     }
   };
+
+  React.useEffect(() => {
+    if (isSuccessRegister) {
+      toast.success("Registration successful!");
+
+      const email = form.getValues("email");
+      const action = "register";
+      const secretKey = "defaultsecret";
+
+      if (!secretKey) {
+        // console.error("JWT_SECRET is not defined");
+        return;
+      }
+
+      const payload = { email, token, action };
+
+      const encodedJWT = jwt.sign(payload, secretKey);
+
+      router.push(`/verify?token=${encodeURIComponent(encodedJWT)}`);
+    } else if (isErrorRegister) {
+      if ("data" in errorRegister && typeof errorRegister.data === "object") {
+        const errorMessage = (errorRegister.data as { message?: string })
+          ?.message;
+        setGlobalError(errorMessage || "Registration failed.");
+        toast.error(errorMessage || "Registration failed.");
+      } else {
+        setGlobalError("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  }, [isSuccessRegister, isErrorRegister, errorRegister, router, form, token]);
 
   return (
     <>
@@ -171,18 +190,32 @@ export default function Signup() {
                 )}
               />
             </div>
-            <LoadingButton
-              pending={form.formState.isSubmitting}
-              text="Sign Up"
-            />
+
+            <div className="w-full">
+              {isLoadingRegister ? (
+                <Button
+                  disabled
+                  className="flex items-center justify-center gap-1 w-full"
+                  type="submit"
+                >
+                  {" "}
+                  <span>Please wait</span>
+                  <Loader className="animate-spin" />
+                </Button>
+              ) : (
+                <Button className="w-full" type="submit">
+                  Sign Up
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
 
         <div className="flex items-center justify-between">
-          <Separator className="w-[40%]"/>
+          <Separator className="w-[40%]" />
 
           <p className="text-sm text-gray-500 text-center block my-2">or</p>
-          <Separator className="w-[40%]"/>
+          <Separator className="w-[40%]" />
         </div>
         <form className="w-full flex flex-col gap-2">
           <Button variant="outline" className="w-full" type="submit">

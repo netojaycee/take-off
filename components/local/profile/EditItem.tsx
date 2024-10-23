@@ -34,9 +34,9 @@ export default function EditItem({
   setIsEditing,
   id,
 }: {
-  id: string;
-  isEditing: boolean;
-  setIsEditing: Function;
+  id?: string;
+  isEditing?: boolean;
+  setIsEditing?: Function;
 }) {
   const [globalError, setGlobalError] = useState<string>("");
   const [imagePreviews, setImagePreviews] = useState<(string | null)[]>([

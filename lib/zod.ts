@@ -1,6 +1,28 @@
 import { z } from "zod";
 
 
+export const registerSchema = z
+    .object({
+        name: z
+            .string({ required_error: "name is required" })
+            .min(1, "Name is required"),
+        email: z
+            .string({ required_error: "Email is required" })
+            .email("Invalid email address"),
+        password: z
+            .string({ required_error: "Password is required" })
+            .min(6, "Password must be at least 6 characters long"),
+        confirmPassword: z
+            .string({
+                required_error: "Confirm Password is required",
+            })
+            .min(6, "Confirm password must be at least 6 characters long"),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+    });
+
 export const editProfileSchema = z
     .object({
         name: z
@@ -41,3 +63,12 @@ export const editItemSchema = z
         images: z.array(z.string()).min(4, 'Product must have 4 images'),
 
     });
+
+export const loginSchema = z.object({
+    email: z
+        .string({ required_error: "Email is required" })
+        .email("Invalid email address"),
+    password: z
+        .string({ required_error: "Password is required" })
+        .min(6, "Password must be at least 6 characters long"),
+});
