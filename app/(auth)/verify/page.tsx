@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,10 +20,6 @@ import {
 } from "@/components/ui/input-otp";
 import LoadingButton from "@/components/local/loadingButton";
 import ErrorMessage from "@/components/local/errorMessage";
-// import {
-//   handleResendVerificationCode,
-//   handleVerify,
-// } from "@/app/actions/authActions";
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +37,7 @@ const otpSchema = z.object({
     .regex(/^\d{4}$/, "Invalid OTP format"),
 });
 
-export default function Verify() {
+function VerifyComponent() {
   const [globalError, setGlobalError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true); // Initially loading
   const [email, setEmail] = useState<string>("");
@@ -294,5 +290,13 @@ export default function Verify() {
         </p>
       </div>
     </>
+  );
+}
+
+export default function Verify() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <VerifyComponent />
+    </Suspense>
   );
 }
