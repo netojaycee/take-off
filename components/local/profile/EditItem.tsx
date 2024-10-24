@@ -91,7 +91,7 @@ export default function EditItem({
       //     }
       //   }
       console.log(values);
-      setIsEditing(false);
+      // setIsEditing(false);
       //   const result = await handleRegister(values);
 
       //   if (result?.success === false) {
