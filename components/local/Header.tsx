@@ -38,7 +38,7 @@ export default function Header({ auth }: { auth?: boolean }) {
               />
             </div>
             <div className="hidden lg:flex items-center gap-10">
-              <Link href={"/"} className="">
+              <Link href={"/sell"} className="">
                 Sell
               </Link>
               <Link href={"/cart"} className="flex items-center gap-2">
@@ -51,37 +51,175 @@ export default function Header({ auth }: { auth?: boolean }) {
             </div>
             <Sheet>
               <SheetTrigger asChild>
-                <Menu className="w-9 h-9 block lg:hidden" />
+                <button className="w-9 h-9 block lg:hidden">
+                  <Menu />
+                </button>
               </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Edit profile</SheetTitle>
-                  <SheetDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Input
-                      id="name"
-                      value="Pedro Duarte"
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Input
-                      id="username"
-                      value="@peduarte"
-                      className="col-span-3"
-                    />
-                  </div>
+
+              <SheetContent side="right" className="w-72 bg-white p-4">
+                <div className="mt-4">
+                  <ul className="space-y-4">
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="/my-profile"
+                          className="block font-medium text-gray-800"
+                        >
+                          My Profile
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Dashboard
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="/my-orders"
+                          className="block font-medium text-gray-800"
+                        >
+                          My Order
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="/saved-items"
+                          className="block font-medium text-gray-800"
+                        >
+                          Saved Items
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="/my-items"
+                          className="block font-medium text-gray-800"
+                        >
+                          My Items
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="/add-items"
+                          className="block font-medium text-gray-800"
+                        >
+                          Add Items
+                        </Link>
+                      </SheetClose>
+                    </li>
+
+                    <hr className="my-4 border-gray-300" />
+
+                    <li className="flex items-center justify-between">
+                      <span className="font-semibold text-gray-600">
+                        CATEGORIES
+                      </span>
+                      <SheetClose asChild>
+                        <Link
+                          href="/products"
+                          className="text-sm text-gray-400"
+                        >
+                          See more
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Appliances
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Electronics
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Furniture
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Phones and Tablets
+                        </Link>
+                      </SheetClose>
+                    </li>
+
+                    <hr className="my-4 border-gray-300" />
+
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="/sell"
+                          className="block font-medium text-gray-800"
+                        >
+                          Sell on Takeoff Trade
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Contact us
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-red-600"
+                        >
+                          Delete Account
+                        </Link>
+                      </SheetClose>
+                    </li>
+                    <li>
+                      <SheetClose asChild>
+                        <Link
+                          href="#"
+                          className="block font-medium text-gray-800"
+                        >
+                          Log out
+                        </Link>
+                      </SheetClose>
+                    </li>
+                  </ul>
                 </div>
-                <SheetFooter>
-                  <SheetClose asChild>
-                    <Button type="submit">Save changes</Button>
-                  </SheetClose>
-                </SheetFooter>
               </SheetContent>
             </Sheet>
           </div>

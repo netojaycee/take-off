@@ -14,6 +14,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -60,8 +61,8 @@ export default function Hero() {
                   <p className="text-white">
                     Deals you don&apos;t want to miss
                   </p>
-                  <Button className="bg-white text-black ">
-                    Shop Now
+                  <Button asChild className="bg-white text-black hover:bg-gray-300">
+                    <Link href="/products">Shop Now</Link>
                   </Button>
                 </div>
               </div>

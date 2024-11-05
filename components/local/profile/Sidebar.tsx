@@ -59,7 +59,7 @@ export default function Sidebar() {
         </li>
         <li>
           <Link
-            href="#"
+            href="add-category"
             className="font-semibold hover:bg-gray-100 py-3 px-10 rounded-md"
           >
             Add Category

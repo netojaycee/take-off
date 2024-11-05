@@ -7,7 +7,7 @@ export default function NewItemsBanner() {
     <div className="flex flex-col gap-5 mt-10">
       <div className=" flex items-center justify-between">
         <h2 className="text-[#252525] text-[20px] font-[600]">New Items</h2>
-        <Link className="text-[rgba(37, 37, 37, 0.5)]" href={""}>
+        <Link className="text-[rgba(37, 37, 37, 0.5)]" href={"/products"}>
           See more
         </Link>
       </div>

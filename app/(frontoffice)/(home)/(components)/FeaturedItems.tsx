@@ -9,7 +9,7 @@ export default function FeaturedItems() {
         <h2 className="text-[#252525] text-[20px] font-[600]">
           Featured Items
         </h2>
-        <Link className="text-[rgba(37, 37, 37, 0.5)]" href={""}>
+        <Link className="text-[rgba(37, 37, 37, 0.5)]" href={"/products"}>
           See more
         </Link>
       </div>

@@ -15,7 +15,9 @@ export default function CustomCarousel({
   carouselOpts,
 }: any) {
   return (
-    <Carousel opts={carouselOpts} className="w-full">
+    // <Carousel opts={carouselOpts} className="w-full">
+          <Carousel customControls={false} controlAlignment="center" opts={carouselOpts}>
+
       <CarouselContent className="-ml-1">
         {items.map((item: any, index: number) => (
           <CarouselItem

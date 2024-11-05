@@ -14,7 +14,7 @@ export default function BestSellingItems() {
         <h2 className="text-[#252525] text-[20px] font-[600]">
           Best Selling Items
         </h2>
-        <Link className="text-[rgba(37, 37, 37, 0.5)]" href={""}>
+        <Link className="text-[rgba(37, 37, 37, 0.5)]" href={"/products"}>
           See more
         </Link>
       </div>

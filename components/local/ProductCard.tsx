@@ -6,8 +6,6 @@ import { BiSolidCart } from "react-icons/bi";
 import { SquarePen, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-
-
 export default function ProductCard({ profile }: { profile?: boolean }) {
   const router = useRouter();
   return (
@@ -40,7 +38,8 @@ export default function ProductCard({ profile }: { profile?: boolean }) {
             className="w-5 h-5 cursor-pointer"
           />
         ) : (
-          <ShoppingCart className="w-7 h-7 cursor-pointer" />
+          <ShoppingCart             onClick={() => router.push(`/cart`)}
+           className="w-7 h-7 cursor-pointer" />
         )}
       </div>
     </div>

@@ -118,7 +118,7 @@ export default function EditItem({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex gap-3 md:flex-row flex-col md:w-[85%] mx-auto items-center"
+            className="flex gap-3 md:flex-row flex-col  items-center"
           >
             <div className="w-full md:w-1/2 flex flex-col">
               {/* Main Image */}

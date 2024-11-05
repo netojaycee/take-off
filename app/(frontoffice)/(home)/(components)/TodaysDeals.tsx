@@ -22,8 +22,8 @@ export default function TodaysDeals() {
               Fireman Generator
             </h2>
             <p className="text-white text-[14px]"> Deal: 50% Off Shop Now</p>
-            <Button className="bg-white text-black w-[70%] hover:text-white">
-              Shop Now
+            <Button asChild className="bg-white text-black w-[70%] hover:text-white">
+        <Link href={"/products"}> Shop Now</Link>
             </Button>
           </div>
           <Image src="/images/generator.png" alt="" width={270} height={236} />

@@ -17,26 +17,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/local/errorMessage";
 import toast from "react-hot-toast";
-import { editProfileSchema } from "@/lib/zod";
+import { createCategorySchema } from "@/lib/zod";
 import { uploadImageToCloudinary } from "@/lib/Cloudinary";
 
-export default function EditProfileForm({
-  isEditing,
-  setIsEditing,
-}: {
-  isEditing: boolean;
-  setIsEditing: Function;
-}) {
+export default function AddCategoryForm() {
   const [globalError, setGlobalError] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview state
-  const form = useForm<z.infer<typeof editProfileSchema>>({
-    resolver: zodResolver(editProfileSchema),
+  const form = useForm<z.infer<typeof createCategorySchema>>({
+    resolver: zodResolver(createCategorySchema),
     defaultValues: {
       name: "",
-      email: "",
-      contact: "",
-      address: "",
       image: "jkjj",
     },
   });
@@ -62,7 +53,7 @@ export default function EditProfileForm({
     }
   };
 
-  const onSubmit = async (values: z.infer<typeof editProfileSchema>) => {
+  const onSubmit = async (values: z.infer<typeof createCategorySchema>) => {
     setGlobalError(""); // Reset global error before submission
 
     try {
@@ -78,7 +69,7 @@ export default function EditProfileForm({
       //     }
       //   }
       console.log(values);
-      setIsEditing(false);
+      
       //   const result = await handleRegister(values);
 
       //   if (result?.success === false) {
@@ -105,9 +96,9 @@ export default function EditProfileForm({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex gap-3 md:flex-row flex-col items-center"
+            className="flex gap-3 flex-col md:w-[85%] mx-auto items-center"
           >
-            <div className="md:w-1/2 flex flex-col gap-4 w-full relative">
+            <div className="flex flex-col gap-4 w-full relative">
               {/* Image Preview with Camera Icon */}
               <div
                 className="relative cursor-pointer"
@@ -127,7 +118,7 @@ export default function EditProfileForm({
               </div>
 
               {/* Hidden Input for Image Upload */}
-              <div className="flex flex-col gap-1">
+              <div className="flex gap-1">
                 <FormField
                   control={form.control}
                   name="image"
@@ -149,7 +140,7 @@ export default function EditProfileForm({
               </div>
             </div>
 
-            <div className="md:w-[70%] w-full flex-col flex gap-5">
+            <div className="w-full flex-col flex gap-5">
               {/* Other form fields */}
               <div className="space-y-3 ">
                 <FormField
@@ -157,83 +148,14 @@ export default function EditProfileForm({
                   name="name"
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-4">
-                      <FormLabel className="text-gray-500 font-semibold text-[16px]">
+                      {/* <FormLabel className="text-gray-500 font-semibold text-[16px]">
                         Name:{" "}
-                      </FormLabel>
+                      </FormLabel> */}
                       <FormControl>
                         <div className="flex flex-col w-full gap-[2px]">
                           <Input
                             type="text"
-                            placeholder="Enter your name"
-                            autoComplete="off"
-                            {...field}
-                          />
-                          <FormMessage />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-4">
-                      <FormLabel className="text-gray-500 font-semibold text-[16px]">
-                        Email:{" "}
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex flex-col w-full gap-[2px]">
-                          <Input
-                            type="email"
-                            placeholder="Enter your email"
-                            autoComplete="off"
-                            {...field}
-                          />
-                          <FormMessage />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="contact"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-4">
-                      <FormLabel className="text-gray-500 font-semibold text-[16px]">
-                        Contact:{" "}
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex flex-col w-full gap-[2px]">
-                          <Input
-                            type="text"
-                            placeholder="Enter your contact"
-                            autoComplete="off"
-                            {...field}
-                          />
-                          <FormMessage />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-4">
-                      <FormLabel className="text-gray-500 font-semibold text-[16px]">
-                        Address:{" "}
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex flex-col w-full gap-[2px]">
-                          <Input
-                            type="text"
-                            placeholder="Enter your address"
+                            placeholder="Enter category name"
                             autoComplete="off"
                             {...field}
                           />
@@ -245,7 +167,7 @@ export default function EditProfileForm({
                 />
               </div>
 
-              <div className="flex w-full gap-5">
+              <div className="flex w-full gap-5 justify-end">
                 <div className="w-1/2">
                   {form.formState.isSubmitting ? (
                     <div className="flex items-center gap-1">
@@ -258,11 +180,7 @@ export default function EditProfileForm({
                     </Button>
                   )}
                 </div>
-                <div className="w-1/2">
-                  <Button className="w-full" variant={"outline"} type="submit">
-                    Cancel
-                  </Button>
-                </div>
+                
               </div>
             </div>
           </form>

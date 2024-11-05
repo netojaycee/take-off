@@ -70,7 +70,7 @@ export default function ViewItem({
 
           <p className="text-sm text-gray-500">(38 Customer reviews)</p>
         </span>
-        <p className="text-base mt-2 text-[#25252580]">
+        <p className="text-base mt-2 text-[#25252580] line-clamp-6">
           Lorem ipsum dolor sit amet consectetur. At sagittis lacinia auctor
           vitae. Enim risus pellentesque sapien amet aliquam venenatis. Massa
           sed mattis id risus volutpat. Eget at ac cursus ut viverra. Enim at id
@@ -82,21 +82,21 @@ export default function ViewItem({
         <div className="flex flex-col gap-5 w-full">
           <div className="flex items-center justify-between">
             <p className="text-gray-500 font-semibold"> Date :</p>
-            <p className="font-semibold md:text-xl text-right">
+            <p className="font-semibold md:text-[14px] text-right">
               April 6th, 2024 by 3:34:07 pm{" "}
             </p>{" "}
           </div>{" "}
           <div className="flex items-center justify-between">
             <p className="text-gray-500 font-semibold">Price:</p>
-            <p className="font-semibold md:text-xl">$250 </p>
+            <p className="font-semibold md:text-[18px]">$250 </p>
           </div>{" "}
           <div className="flex items-center justify-between">
             <p className="text-gray-500 font-semibold">Categories:</p>
-            <p className="font-semibold md:text-xl"> Electronics and Audio</p>
+            <p className="font-semibold md:text-[16px]"> Electronics and Audio</p>
           </div>{" "}
           <div className="flex items-center justify-between">
             <p className="text-gray-500 font-semibold">Current Status:</p>
-            <p className="text-red-500 font-semibold md:text-xl">
+            <p className="text-red-500 font-semibold md:text-[16px]">
               Out of stock
             </p>
           </div>

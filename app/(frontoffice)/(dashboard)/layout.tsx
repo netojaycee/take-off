@@ -3,7 +3,7 @@ import React from "react";
 
 const SiteLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex min-h-screen w-full md:w-[90%] mx-auto">
+    <div className="flex min-h-screen w-full">
       {/* Sidebar */}
       <div className="w-1/4 p-4 sticky top-0 hidden lg:block">
       <Sidebar />

@@ -10,7 +10,7 @@ export default function ViewProfileForm({
   setIsEditing: Function;
 }) {
   return (
-    <div className="flex gap-3 md:flex-row flex-col md:w-[80%] mx-auto">
+    <div className="flex gap-3 md:flex-row flex-col">
       <div className="md:w-1/2 w-full ">
         <Image
           src={"/images/profile.png"}

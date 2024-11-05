@@ -72,3 +72,14 @@ export const loginSchema = z.object({
         .string({ required_error: "Password is required" })
         .min(6, "Password must be at least 6 characters long"),
 });
+
+
+export const createCategorySchema = z
+    .object({
+        name: z
+            .string({ required_error: "category name is required" })
+            .min(1, "Category Name is required"),
+        image: z
+            .string({ required_error: "image is required" })
+            .min(1, "image is required"),
+    });

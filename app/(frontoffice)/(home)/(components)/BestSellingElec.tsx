@@ -86,8 +86,8 @@ export default function BestSellingElec() {
                 {" "}
                 Selling for just <span className="text-red-500">$120</span>{" "}
               </p>
-              <Button className="bg-white text-black w-[70%] hover:text-white text-xs">
-                Shop Now
+              <Button asChild className="bg-white text-black w-[70%] hover:text-white text-xs">
+               <Link href={"/products"}>Shop Now</Link>
               </Button>
             </div>
             <Image src="/images/headset.png" alt="" width={60} height={236} />
