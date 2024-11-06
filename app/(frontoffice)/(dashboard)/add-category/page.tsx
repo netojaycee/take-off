@@ -69,7 +69,7 @@ export default function AddCategoryForm() {
       //     }
       //   }
       console.log(values);
-      
+
       //   const result = await handleRegister(values);
 
       //   if (result?.success === false) {
@@ -180,7 +180,6 @@ export default function AddCategoryForm() {
                     </Button>
                   )}
                 </div>
-                
               </div>
             </div>
           </form>

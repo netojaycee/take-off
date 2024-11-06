@@ -50,6 +50,7 @@ export default function Signup() {
       name: "",
       email: "",
       password: "",
+      role: "buyer",
     },
   });
 

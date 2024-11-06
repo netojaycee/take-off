@@ -95,7 +95,7 @@ export const productsApi = createApi({
         try {
           const result = await queryFulfilled;
           const decodedToken = jwtDecode(result.data.token);
-          console.log(decodedToken)
+          console.log(decodedToken);
 
           // Set credentials in Redux
           dispatch(
@@ -106,6 +106,21 @@ export const productsApi = createApi({
           Cookies.set("token", result.data.token);
           // const token = result.data.token;
           // setAuthSession(token);
+        } catch (err) {
+          //   console.error("Register failed:", err);
+        }
+      },
+    }),
+
+    becomeSeller: builder.mutation({
+      query: (credentials) => ({
+        url: "/seller/become-seller",
+        method: "POST",
+        body: credentials,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
         } catch (err) {
           //   console.error("Register failed:", err);
         }
@@ -426,6 +441,8 @@ export const {
   useVerifyTokenMutation,
   useResendVerifyTokenMutation,
   useLoginMutation,
+  useBecomeSellerMutation,
+
 
   // useLoginMutation,
   // useContactMutation,

@@ -159,7 +159,7 @@ function VerifyComponent() {
     try {
       const credentials = { email };
       const result = await resendVerifyToken(credentials);
-      // console.log(result);
+      console.log(result);
     } catch (error) {
       toast.error("An error occurred while resending the verification code.");
       console.error("Error resending verification code:", error);

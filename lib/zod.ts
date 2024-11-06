@@ -6,6 +6,9 @@ export const registerSchema = z
         name: z
             .string({ required_error: "name is required" })
             .min(1, "Name is required"),
+        role: z
+            .string({ required_error: "role is required" })
+            .min(1, "Role is required"),
         email: z
             .string({ required_error: "Email is required" })
             .email("Invalid email address"),
@@ -22,6 +25,39 @@ export const registerSchema = z
         message: "Passwords don't match",
         path: ["confirmPassword"],
     });
+
+
+
+export const becomeSellerSchema = z
+    .object({
+        // name: z
+        //   .string()
+        //   .min(1, "Name is required")
+        //   .optional(),
+        // role: z
+        //   .string()
+        //   .min(1, "Role is required")
+        //   .optional(),
+        email: z
+            .string({ required_error: "Email is required" })
+            .email("Invalid email address"),
+        // password: z
+        //   .string()
+        //   .min(6, "Password must be at least 6 characters long")
+        //   .optional(),
+        // confirmPassword: z
+        //   .string()
+        //   .min(6, "Confirm password must be at least 6 characters long")
+        //   .optional(),
+    })
+//   .refine(
+//     (data) => !data.password || data.password === data.confirmPassword,
+//     {
+//       message: "Passwords don't match",
+//       path: ["confirmPassword"],
+//     }
+//   );
+
 
 export const editProfileSchema = z
     .object({
