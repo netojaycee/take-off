@@ -33,7 +33,7 @@ export default function DeleteForm({
       if (title === "category") {
         console.log("category");
         result = await deleteCategory(data._id); // Delete category
-        console.log(result)
+        console.log(result);
       }
       if (title === "product") {
         console.log("product");
@@ -41,12 +41,12 @@ export default function DeleteForm({
       }
 
       // If the deletion was successful, show a success toast and close the dialog
-      // if (result && result.success) {
-      //   toast.success(result.message);
-      //   onClose(false); // Close the dialog after deletion
-      // } else {
-      //   toast.error(result?.message || "Failed to delete item");
-      // }
+      if (result && result?.data?.status) {
+        toast.success(result?.data?.message);
+        onClose(false); // Close the dialog after deletion
+      } else {
+        toast.error(result?.data?.message || "Failed to delete item");
+      }
     } catch (error) {
       toast.error("An unexpected error occurred.");
       console.error(error);

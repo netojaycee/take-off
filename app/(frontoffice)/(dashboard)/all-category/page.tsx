@@ -55,14 +55,16 @@ export default function AllCategory() {
   }
   const categories = data.category as category[];
   console.log(categories)
+  const totalPerPage = categories && categories.length < 15 ? categories.length : 15;
+
   return (
     <div className="py-5 px-5 md:py-[50px] md:px-[70px] border rounded-md ">
       <div className="flex flex-col gap-5">
         <div className=" flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">My Items</h2>
+            <h2 className="text-2xl font-semibold">All Categories</h2>
             <p className="text-xs md:text-sm text-gray-500 hidden md:block">
-              Showing 12 results from total 240
+              Showing {totalPerPage} results from total {categories && categories.length}
             </p>
           </div>
           <div className="">

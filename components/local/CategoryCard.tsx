@@ -23,8 +23,8 @@ export default function CategoryCard({
         className="bg-[#F6F6F6] p-5 flex items-center justify-center"
       >
         <Image
-          src="/images/electronic-category.png"
-          alt=""
+          src={data.thumbnail.url || "/images/electronic-category.png"}
+          alt={data.name || "category Image"}
           width={150}
           height={120}
           className="object-cover w-full"
@@ -35,7 +35,7 @@ export default function CategoryCard({
         className={`flex 
         ${profile ? "justify-between" : "justify-center"}  items-center`}
       >
-        <p className="text-center my-[2px]">Electronics</p>
+        <p className="text-center my-[2px]">{data?.name}</p>
 
         {profile && (
           <div className="flex gap-4 items-center">
