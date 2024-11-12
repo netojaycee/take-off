@@ -45,8 +45,7 @@ const baseQuery = fetchBaseQuery({
 export const productsApi = createApi({
   reducerPath: "products",
   baseQuery,
-  // tagTypes: ["Category", "Product", "AdminOrders", "UserOrders"],
-  tagTypes: ["Category"],
+  tagTypes: ["Category", "Product"],
 
   endpoints: (builder) => ({
     register: builder.mutation({
@@ -211,6 +210,42 @@ export const productsApi = createApi({
         }
       },
       invalidatesTags: ["Category"],
+    }),
+
+    addProduct: builder.mutation({
+      query: (formData) => ({
+        url: "/product/create",
+        method: "POST",
+        body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("product add failed:", err);
+        }
+      },
+      invalidatesTags: ["Product"],
+    }),
+
+    editProduct: builder.mutation({
+      query: ({ formData, id }) => ({
+        url: `/product/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("product add failed:", err);
+        }
+      },
+      invalidatesTags: ["Product"],
     }),
 
     // getAllProduct: builder.query({
@@ -499,11 +534,15 @@ export const {
   useResendVerifyTokenMutation,
   useLoginMutation,
   useBecomeSellerMutation,
+
   useAddCategoryMutation,
   useGetAllCategoryQuery,
   useDeleteCategoryMutation,
   useGetCategoryByIdQuery,
   useEditCategoryMutation,
+
+  useAddProductMutation,
+  useEditProductMutation,
 
   // useLoginMutation,
   // useContactMutation,

@@ -84,17 +84,17 @@ export const editItemSchema = z
         name: z
             .string({ required_error: "name is required" })
             .min(1, "Name is required"),
-        category: z
+        categoryId: z
             .string({ required_error: "category is required" })
             .min(1, "category is required"),
         price: z
-            .number({ required_error: "price is required" })
+            .string({ required_error: "price is required" })
             .min(1, "price is required"),
         description: z
             .string({ required_error: "Description is required" })
             .min(1, "Description is required"),
-        stock: z
-            .number({ required_error: "Stock is required" })
+        quantity: z
+            .string({ required_error: "Stock is required" })
             .min(1, "Stock is required"),
         images: z.array(z.string()).min(4, 'Product must have 4 images'),
 

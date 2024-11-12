@@ -9,7 +9,9 @@ import * as React from "react";
 export default function ViewItem({
   isEditing,
   setIsEditing,
+  data,
 }: {
+  data: any;
   isEditing: boolean;
   setIsEditing: Function;
 }) {

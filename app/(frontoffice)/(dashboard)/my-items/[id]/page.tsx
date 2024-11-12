@@ -11,12 +11,13 @@ export default function MyItemsDetails({ params }: { params: { id: string } }) {
     <div className="py-5 px-5 md:py-[50px] md:px-[70px] border rounded-md ">
       {isEditing ? (
         <EditItem
+          type="edit"
           isEditing={isEditing}
           setIsEditing={setIsEditing}
-          id={params.id}
+          data={""}
         />
       ) : (
-        <ViewItem isEditing={isEditing} setIsEditing={setIsEditing} />
+        <ViewItem data={""} isEditing={isEditing} setIsEditing={setIsEditing} />
       )}
     </div>
   );

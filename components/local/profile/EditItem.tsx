@@ -28,17 +28,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  useAddProductMutation,
+  useEditProductMutation,
+  useGetAllCategoryQuery,
+} from "@/redux/appData";
+import { category } from "@/types";
 
 export default function EditItem({
   isEditing,
   setIsEditing,
-  id,
+  data,
+  type,
 }: {
-  id?: string;
+  data?: any;
   isEditing?: boolean;
   setIsEditing?: Function;
+  type: string;
 }) {
+  const {
+    data: dataCategory,
+    isLoading: isLoadingCategory,
+    error: errorCategory,
+  } = useGetAllCategoryQuery(undefined);
+  const categories = (dataCategory?.category || []) as category[];
+
+  const [
+    editProduct,
+    {
+      isLoading: isEditingProduct,
+      isSuccess: isSuccessProduct,
+      isError: isErrorProduct,
+      error: errorProduct,
+    },
+  ] = useEditProductMutation();
+  const [
+    addProduct,
+    { isLoading: isAddingProduct, isSuccess, isError, error },
+  ] = useAddProductMutation();
+
   const [globalError, setGlobalError] = useState<string>("");
+  const [imageFile, setImageFile] = useState<(File | null)[]>([]);
   const [imagePreviews, setImagePreviews] = useState<(string | null)[]>([
     "/images/thumbnail1.png",
     "/images/thumbnail2.png",
@@ -50,9 +80,9 @@ export default function EditItem({
     resolver: zodResolver(editItemSchema),
     defaultValues: {
       name: "",
-      category: "",
-      price: 0,
-      stock: 0,
+      categoryId: "",
+      price: "",
+      quantity: "",
       description: "",
       images: [],
     },
@@ -79,31 +109,28 @@ export default function EditItem({
     setGlobalError(""); // Reset global error before submission
 
     try {
-      // Upload the image if it exists
-      //   if (imageFile) {
-      //     try {
-      //       const uploadedUrl = await uploadImageToCloudinary(imageFile);
-      //       values.image = uploadedUrl; // Add the image URL to the form values
-      //     } catch (error) {
-      //       console.error("Image upload failed:", error);
-      //       toast.error("Failed to upload image.");
-      //       return;
-      //     }
-      //   }
-      console.log(values);
-      // setIsEditing(false);
-      //   const result = await handleRegister(values);
+      // if (type === "add") {
+        console.log("add");
+        const formData = new FormData();
 
-      //   if (result?.success === false) {
-      //     toast.error(result.message);
-      //     setGlobalError(result.message); // Display error message
-      //   } else {
-      //     toast.success("Registration successful!");
-      //     const email = result.email || ""; // Provide a default value
-      //     router.push(
-      //       /verify?email=${encodeURIComponent(email)}&action=register
-      //     );
-      //   }
+        formData.append("name", values.name);
+        formData.append("description", values.description);
+        formData.append("categoryId", values.categoryId);
+        formData.append("quantity", values.quantity.toString());
+        formData.append("price", values.price.toString());
+
+        imageFile.forEach((file, index) => {
+          if (file) {
+            formData.append("images", file); // Append each file to "images"
+          }
+        });
+
+        const result = await addProduct(formData);
+        console.log(result);
+      // } else {
+      //   console.log("edit");
+      // }
+      console.log(values);
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
@@ -123,13 +150,15 @@ export default function EditItem({
             <div className="w-full md:w-1/2 flex flex-col">
               {/* Main Image */}
               <div className="relative w-full h-auto mb-4 bg-[#F2F2F2] rounded-md shadow-md p-4 flex items-center justify-center">
-                <Image
-                  src={imagePreviews[0] || "/images/thumbnail1.png"}
-                  alt="Product Image"
-                  width={450}
-                  height={450}
-                  className="object-cover"
-                />
+                <div className="w-[300px] h-[300px]">
+                  <Image
+                    src={imagePreviews[0] || "/images/thumbnail1.png"}
+                    alt="Product Image"
+                    width={450}
+                    height={450}
+                    className="object-contain cursor-pointer w-full h-full"
+                  />
+                </div>
                 <div className="absolute top-2 left-2">
                   <label htmlFor="mainImage">
                     <Camera className="w-6 h-6 cursor-pointer text-gray-500" />
@@ -148,18 +177,20 @@ export default function EditItem({
                 {imagePreviews.slice(1).map((preview, index) => (
                   <div
                     key={index + 1}
-                    className="relative cursor-pointer w-[100px] h-[100px] bg-[#F2F2F2] rounded-md shadow-md p-2"
+                    className="relative  w-[100px] h-[100px] bg-[#F2F2F2] rounded-md shadow-md p-2"
                   >
-                    <Image
-                      src={preview || `/images/thumbnail${index + 2}.png`}
-                      alt={`Thumbnail ${index + 2}`}
-                      width={100}
-                      height={100}
-                      className="object-cover"
-                    />
+                    <div className="w-[90px] h-[90px]">
+                      <Image
+                        src={preview || `/images/thumbnail${index + 2}.png`}
+                        alt={`Thumbnail ${index + 2}`}
+                        width={100}
+                        height={100}
+                        className="object-contain object-center w-full h-full"
+                      />
+                    </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <label htmlFor={`thumbnail${index + 2}`}>
-                        <Camera className="w-6 h-6 text-gray-500" />
+                        <Camera className="w-6 h-6 text-gray-500 cursor-pointer" />
                         <input
                           id={`thumbnail${index + 2}`}
                           type="file"
@@ -202,17 +233,30 @@ export default function EditItem({
                     Category
                   </Label>
                   <Controller
-                    name="category"
+                    name="categoryId"
                     control={form.control}
                     render={({ field: { onChange, value } }) => (
                       <Select onValueChange={onChange} value={value}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[200px] overflow-auto">
                           <SelectGroup>
-                            <SelectItem value={"shoe"}>Shoe</SelectItem>
-                            <SelectItem value={"clothes"}>Clothes</SelectItem>
+                            {categories.length > 0 ? (
+                              categories.map((category) => (
+                                <SelectItem
+                                  key={category._id}
+                                  value={category._id}
+                                >
+                                  {category.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <div className="flex items-center gap-1 text-xs">
+                                No categories available.
+                                <Loader className="animate-spin" />
+                              </div>
+                            )}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -244,16 +288,16 @@ export default function EditItem({
 
                   <FormField
                     control={form.control}
-                    name="stock"
+                    name="quantity"
                     render={({ field }) => (
                       <FormItem className="w-full md:w-1/2">
-                        <FormLabel htmlFor="stock" className="text-xs">
-                          Stock
+                        <FormLabel htmlFor="quantity" className="text-xs">
+                          Quantity
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="text"
-                            placeholder="Enter item stock count"
+                            placeholder="Enter item quantity count"
                             autoComplete="off"
                             {...field}
                           />
@@ -285,24 +329,21 @@ export default function EditItem({
                 />
               </div>
 
-              <div className="flex w-full gap-5">
-                <div className="w-1/2">
-                  {form.formState.isSubmitting ? (
-                    <div className="flex items-center gap-1">
-                      <span>Saving</span>
-                      <Loader className="animate-spin" />
-                    </div>
-                  ) : (
-                    <Button className="w-full" type="submit">
-                      Save
-                    </Button>
-                  )}
-                </div>
-                <div className="w-1/2">
-                  <Button className="w-full" variant={"outline"} type="submit">
-                    Cancel
+              <div className="w-full">
+                {isAddingProduct || isEditingProduct ? (
+                  <Button
+                    disabled
+                    className="flex items-center justify-center gap-1 w-full"
+                    type="submit"
+                  >
+                    <span>Please wait</span>
+                    <Loader className="animate-spin" />
                   </Button>
-                </div>
+                ) : (
+                  <Button className="w-full" type="submit">
+                    Save
+                  </Button>
+                )}
               </div>
             </div>
           </form>
