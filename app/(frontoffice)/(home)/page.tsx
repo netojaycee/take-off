@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import BestSellingElec from "./(components)/BestSellingElec";
 import BestSellingItems from "./(components)/BestSellingItems";
 import Categories from "./(components)/Categories";
@@ -12,11 +12,13 @@ import { RootState } from "@/types";
 
 export default function Home() {
   const userData = useSelector((state: RootState) => state.auth.userData);
-  console.log(userData)
+  const auth = useSelector((state: RootState) => state.auth.isAuthenticated);
+  console.log(userData);
+  console.log(auth);
   return (
     <>
       <Hero />
-    
+
       <Categories />
       <NewItemsBanner />
       <NewItemsProducts />

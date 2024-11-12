@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,7 +10,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/local/errorMessage";
 import toast from "react-hot-toast";
 import { createCategorySchema } from "@/lib/zod";
-import { uploadImageToCloudinary } from "@/lib/Cloudinary";
+import { useAddCategoryMutation } from "@/redux/appData";
 
 export default function AddCategoryForm() {
   const [globalError, setGlobalError] = useState<string>("");
@@ -28,9 +27,14 @@ export default function AddCategoryForm() {
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
       name: "",
-      image: "jkjj",
+      thumbnail: undefined,
     },
   });
+
+  const [
+    addCategory,
+    { isLoading: isAddingCategory, isSuccess, isError, error },
+  ] = useAddCategoryMutation();
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -49,45 +53,47 @@ export default function AddCategoryForm() {
       "imageInput"
     ) as HTMLInputElement;
     if (inputElement) {
-      inputElement.click(); // Trigger file input click when image is clicked
+      inputElement.click();
     }
   };
 
   const onSubmit = async (values: z.infer<typeof createCategorySchema>) => {
-    setGlobalError(""); // Reset global error before submission
+    setGlobalError("");
 
     try {
-      // Upload the image if it exists
-      //   if (imageFile) {
-      //     try {
-      //       const uploadedUrl = await uploadImageToCloudinary(imageFile);
-      //       values.image = uploadedUrl; // Add the image URL to the form values
-      //     } catch (error) {
-      //       console.error("Image upload failed:", error);
-      //       toast.error("Failed to upload image.");
-      //       return;
-      //     }
-      //   }
-      console.log(values);
+      const formData = new FormData();
 
-      //   const result = await handleRegister(values);
+      formData.append("name", values.name);
 
-      //   if (result?.success === false) {
-      //     toast.error(result.message);
-      //     setGlobalError(result.message); // Display error message
-      //   } else {
-      //     toast.success("Registration successful!");
-      //     const email = result.email || ""; // Provide a default value
-      //     router.push(
-      //       `/verify?email=${encodeURIComponent(email)}&action=register`
-      //     );
-      //   }
+      if (imageFile) {
+        formData.append("thumbnail", imageFile);
+      }
+
+      const result = await addCategory(formData);
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
       console.error("An error occurred:", error);
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Category created successfully!");
+      form.reset(); // Reset form values to default
+      setImageFile(null); // Clear the selected file
+      setImagePreview(null);
+    } else if (isError) {
+      if ("data" in error && typeof error.data === "object") {
+        const errorMessage = (error.data as { message?: string })?.message;
+        setGlobalError(errorMessage || "Category creation failed.");
+        toast.error(errorMessage || "Category creation failed.");
+      } else {
+        setGlobalError("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  }, [isSuccess, isError, error, form]);
 
   return (
     <>
@@ -99,18 +105,22 @@ export default function AddCategoryForm() {
             className="flex gap-3 flex-col md:w-[85%] mx-auto items-center"
           >
             <div className="flex flex-col gap-4 w-full relative">
-              {/* Image Preview with Camera Icon */}
               <div
                 className="relative cursor-pointer"
                 onClick={handleImageClick}
               >
-                <Image
-                  src={imagePreview || "/images/profile.png"}
-                  alt="Profile Preview"
-                  width={250}
-                  height={250}
-                  className="object-cover rounded-lg bg-gray-400 p-1"
-                />
+                <div className="w-[250px] h-[200px]">
+                  <Image
+                    src={
+                      imagePreview ||
+                      "https://via.placeholder.com/250x200.png?text=Click+to+upload+image"
+                    }
+                    alt="Profile Preview"
+                    width={150}
+                    height={120}
+                    className="object-contain w-full h-full rounded-lg bg-gray-400 p-1"
+                  />
+                </div>
                 {/* Camera Icon on Top Left */}
                 <div className="absolute top-2 left-2 p-1 bg-white rounded-full shadow-lg">
                   <Camera className="w-6 h-6 text-gray-500" />
@@ -121,7 +131,7 @@ export default function AddCategoryForm() {
               <div className="flex gap-1">
                 <FormField
                   control={form.control}
-                  name="image"
+                  name="thumbnail"
                   render={() => (
                     <FormItem>
                       <FormControl>
@@ -167,19 +177,21 @@ export default function AddCategoryForm() {
                 />
               </div>
 
-              <div className="flex w-full gap-5 justify-end">
-                <div className="w-1/2">
-                  {form.formState.isSubmitting ? (
-                    <div className="flex items-center gap-1">
-                      <span>Saving</span>
-                      <Loader className="animate-spin" />
-                    </div>
-                  ) : (
-                    <Button className="w-full" type="submit">
-                      Save
-                    </Button>
-                  )}
-                </div>
+              <div className="w-full">
+                {isAddingCategory ? (
+                  <Button
+                    disabled
+                    className="flex items-center justify-center gap-1 w-full"
+                    type="submit"
+                  >
+                    <span>Please wait</span>
+                    <Loader className="animate-spin" />
+                  </Button>
+                ) : (
+                  <Button className="w-full" type="submit">
+                    Save
+                  </Button>
+                )}
               </div>
             </div>
           </form>

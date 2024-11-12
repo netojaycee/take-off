@@ -13,6 +13,20 @@ export interface register {
   password: string;
 }
 
+export interface Thumbnail {
+  id: string;
+  url: string;
+  _id: string;
+
+}
+
+export interface category {
+  id: string;
+  name: string;
+  thumbnail: Thumbnail;
+
+}
+
 
 // types.ts
 export interface UserData {
@@ -21,7 +35,7 @@ export interface UserData {
   email: string;
   // phone: string;
   // address: string;
-  // role: string[];
+  role: string;
 }
 
 export interface AuthState {

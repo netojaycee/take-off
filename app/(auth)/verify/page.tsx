@@ -117,8 +117,8 @@ function VerifyComponent() {
     try {
       const credentials = { userId, token: values.otp };
       if (!isReset) {
-        await verifyToken(credentials);
-        // console.log(result);
+        const result = await verifyToken(credentials);
+        console.log(result);
       } else {
         console.log(credentials);
         // const result = await handleVerify(credentials);

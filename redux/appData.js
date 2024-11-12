@@ -9,11 +9,19 @@ const baseQuery = fetchBaseQuery({
   // baseUrl: "http://localhost:5000/api/",
   baseUrl: "https://take-off-r3fp.onrender.com/",
   prepareHeaders: (headers) => {
-    headers.set("Content-Type", "application/json");
+    // Only set "Content-Type" to "application/json" if body is not FormData
+    // if (!(body instanceof FormData)) {
+    //   headers.set('Content-Type', 'application/json');
+    // } else {
+    //   // Remove any previously set Content-Type for FormData to avoid conflicts
+    //   headers.delete('Content-Type');
+    // }
+
     const token = Cookies.get("token");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
+
     return headers;
   },
   // Custom response handler to handle text responses
@@ -38,12 +46,15 @@ export const productsApi = createApi({
   reducerPath: "products",
   baseQuery,
   // tagTypes: ["Category", "Product", "AdminOrders", "UserOrders"],
+  tagTypes: ["Category"],
+
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (credentials) => ({
         url: "/auth/create",
         method: "POST",
         body: credentials,
+        headers: { "Content-Type": "application/json" },
       }),
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
@@ -59,6 +70,7 @@ export const productsApi = createApi({
         url: "/auth/verify-token",
         method: "POST",
         body: credentials,
+        headers: { "Content-Type": "application/json" },
       }),
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
@@ -74,6 +86,7 @@ export const productsApi = createApi({
         url: "/auth/resend-token",
         method: "POST",
         body: credentials,
+        headers: { "Content-Type": "application/json" },
       }),
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
@@ -89,6 +102,7 @@ export const productsApi = createApi({
         url: "/auth/login",
         method: "POST",
         body: credentials,
+        headers: { "Content-Type": "application/json" },
       }),
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         // const { setAuthSession } = useSession();
@@ -103,7 +117,12 @@ export const productsApi = createApi({
           );
 
           // Set the cookie
-          Cookies.set("token", result.data.token);
+          // Cookies.set("token", result.data.token);
+          Cookies.set("token", result.data.token, {
+            expires: 7,
+            secure: true,
+            sameSite: "strict",
+          });
           // const token = result.data.token;
           // setAuthSession(token);
         } catch (err) {
@@ -117,6 +136,7 @@ export const productsApi = createApi({
         url: "/seller/become-seller",
         method: "POST",
         body: credentials,
+        headers: { "Content-Type": "application/json" },
       }),
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         try {
@@ -126,6 +146,48 @@ export const productsApi = createApi({
         }
       },
     }),
+
+    addCategory: builder.mutation({
+      query: (formData) => ({
+        url: "/category/create",
+        method: "POST",
+        body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category add failed:", err);
+        }
+      },
+      invalidatesTags: ["Category"],
+    }),
+    getAllCategory: builder.query({
+      query: () => "/category/all",
+      providesTags: ["Category"],
+      headers: { "Content-Type": "application/json" },
+    }),
+
+    deleteCategory: builder.mutation({
+      query: (id) => ({
+        url: `/category/${id}`,
+        method: "DELETE",
+        // body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category delete failed:", err);
+        }
+      },
+      invalidatesTags: ["Category"],
+    }),
+
     // getAllProduct: builder.query({
     //   query: () => "/products",
     //   providesTags: ["Product"],
@@ -146,23 +208,6 @@ export const productsApi = createApi({
     //   query: () => `/users/`,
     // }),
 
-    // addCategory: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: "/category",
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       // console.log("registered");
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("category add failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["Category"],
-    // }),
     // editCategory: builder.mutation({
     //   query: ({ slug, credentials }) => ({
     //     url: `categories/${slug}`,
@@ -375,19 +420,6 @@ export const productsApi = createApi({
     //   },
     // }),
 
-    // logout: builder.mutation({
-    //   queryFn: () => ({ data: null }), // No API call, just return success
-    //   onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //       dispatch(clearCredentials());
-    //       dispatch(clearUserInfo());
-    //     } catch (err) {
-    //       // console.error("Logout failed:", err);
-    //     }
-    //   },
-    // }),
-
     // deleteCategory: builder.mutation({
     //   query: (credentials) => ({
     //     url: `categories/${credentials}`,
@@ -442,6 +474,9 @@ export const {
   useResendVerifyTokenMutation,
   useLoginMutation,
   useBecomeSellerMutation,
+  useAddCategoryMutation,
+  useGetAllCategoryQuery,
+  useDeleteCategoryMutation,
 
 
   // useLoginMutation,
@@ -452,16 +487,13 @@ export const {
   // useEditUserPasswordMutation,
   // useGetAllProductQuery,
   // useGetVerifyPaymentQuery,
-  // useGetAllCategoryQuery,
   // useGetAllUserOrdersQuery,
   // useGetAllOrdersQuery,
   // useGetAllUsersQuery,
-  // useAddCategoryMutation,
   // useEditCategoryMutation,
   // useAddProductMutation,
   // useEditProductMutation,
 
-  // useLogoutMutation,
   // useMarkOrderMutation,
   // usePaymentMutation,
 

@@ -132,7 +132,7 @@ export default function SellerReg() {
         // Perform full registration
         const result = await register(values as RegisterFormData);
         setToken(result?.data?.id);
-        console.log(result)
+        console.log(result);
 
         // Handle successful registration
         // if (isSuccessRegister) {
@@ -150,13 +150,14 @@ export default function SellerReg() {
 
         if (result?.data?.status === 200) {
           toast.success("OTP sent to your email.");
-          setToken(result?.data?.id);
+          console.log(result?.data?.userId);
+          // setToken(result?.data?.userId);
           const payload = {
             email: (values as BecomeSellerFormData).email,
-            token,
-            action: "verify",
+            token: result.data.userId,
+            action: "register",
           };
-          // console.log(payload);
+          console.log(payload);
           const encodedJWT = jwt.sign(payload, "defaultsecret");
           router.push(`/verify?token=${encodeURIComponent(encodedJWT)}`);
         } else if (

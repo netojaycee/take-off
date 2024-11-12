@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Logo from "./logo";
 import Link from "next/link";
@@ -16,8 +17,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { persistor } from "@/redux/store";
+import Cookies from "js-cookie";
 
 export default function Header({ auth }: { auth?: boolean }) {
+
+  const handleLogout = async () => {
+    try {
+      // Step 1: Remove token from cookies
+      Cookies.remove("token");
+
+      // Step 2: Clear Redux Persist Storage
+      await persistor.purge();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
       <div className="py-6 px-10">
@@ -56,7 +72,10 @@ export default function Header({ auth }: { auth?: boolean }) {
                 </button>
               </SheetTrigger>
 
-              <SheetContent side="right" className="w-72 bg-white p-4">
+              <SheetContent
+                side="right"
+                className="w-72 bg-white p-4 h-screen overflow-auto"
+              >
                 <div className="mt-4">
                   <ul className="space-y-4">
                     <li>
@@ -198,6 +217,7 @@ export default function Header({ auth }: { auth?: boolean }) {
                         </Link>
                       </SheetClose>
                     </li>
+
                     <li>
                       <SheetClose asChild>
                         <Link
@@ -210,12 +230,12 @@ export default function Header({ auth }: { auth?: boolean }) {
                     </li>
                     <li>
                       <SheetClose asChild>
-                        <Link
-                          href="#"
-                          className="block font-medium text-gray-800"
+                        <span
+                          onClick={handleLogout}
+                          className="block font-medium text-red-600 cursor-pointer"
                         >
                           Log out
-                        </Link>
+                        </span>
                       </SheetClose>
                     </li>
                   </ul>

@@ -110,12 +110,27 @@ export const loginSchema = z.object({
 });
 
 
-export const createCategorySchema = z
-    .object({
-        name: z
-            .string({ required_error: "category name is required" })
-            .min(1, "Category Name is required"),
-        image: z
-            .string({ required_error: "image is required" })
-            .min(1, "image is required"),
-    });
+export const createCategorySchema = z.object({
+    name: z
+      .string({ required_error: "Category name is required" })
+      .min(1, "Category name is required"),
+    thumbnail: z
+      .instanceof(File, { message: "Image is required" })
+      .optional(), // Make it optional to allow for empty fields before file is selected
+  });
+  
+
+
+  //     how can structure my image to be sent in body as json den
+
+    // cause my backend does something like this
+
+    // async createCategory(body: any, files: any) {
+    // const { name } = body;
+    // let { thumbnail } = files;
+
+    // try {
+    // if (!thumbnail) {
+    // throw new unprocessableentitiyexception("image required")}
+
+    // }

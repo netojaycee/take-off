@@ -31,10 +31,10 @@ export default function MyItems() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {Array.from({ length: 12 }).map((_, index) => (
             <div key={index}>
-              <ProductCard profile />
+              <ProductCard data={""} profile />
             </div>
           ))}
         </div>

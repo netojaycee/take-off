@@ -3,11 +3,20 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { BiSolidCart } from "react-icons/bi";
-import { SquarePen, ShoppingCart } from "lucide-react";
+import { SquarePen, ShoppingCart, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { CustomDialog } from "./profile/CustomDialog";
 
-export default function ProductCard({ profile }: { profile?: boolean }) {
+export default function ProductCard({
+  profile,
+  data,
+}: {
+  profile?: boolean;
+  data: any;
+}) {
   const router = useRouter();
+  const [isDialogOpen, setDialogOpen] = React.useState(false);
+
   return (
     <div className="flex flex-col  ">
       {/* <Link href={`/products/${id}`} className="bg-[#F6F6F6] p-5"> */}
@@ -33,15 +42,29 @@ export default function ProductCard({ profile }: { profile?: boolean }) {
           </h2>
         </div>
         {profile ? (
-          <SquarePen
-            onClick={() => router.push(`/my-items/jdhsjhdjs`)}
-            className="w-5 h-5 cursor-pointer"
-          />
+          <div className="flex gap-4 items-center">
+            <SquarePen
+              onClick={() => router.push(`/my-items/jdhsjhdjs`)}
+              className="w-5 h-5 cursor-pointer"
+            />
+            <Trash
+              onClick={() => setDialogOpen(true)}
+              className="w-5 h-5 cursor-pointer text-red-500"
+            />
+          </div>
         ) : (
-          <ShoppingCart             onClick={() => router.push(`/cart`)}
-           className="w-7 h-7 cursor-pointer" />
+          <ShoppingCart
+            onClick={() => router.push(`/cart`)}
+            className="w-7 h-7 cursor-pointer"
+          />
         )}
       </div>
+      <CustomDialog
+        open={isDialogOpen}
+        onOpenChange={(open) => setDialogOpen(open)}
+        title={"product"}
+        data={data}
+      />
     </div>
   );
 }
