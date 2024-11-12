@@ -21,7 +21,7 @@ export default function BestSellingItems() {
 
       <CustomCarousel
         items={productData}
-        renderCard={() => <ProductCard />}
+        renderCard={() => <ProductCard data={""}/>}
         carouselOpts={{
           align: "start",
           loop: true,

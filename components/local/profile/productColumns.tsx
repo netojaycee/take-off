@@ -78,7 +78,7 @@ export const columns: ColumnDef<category>[] = [
       return (
         <div className="flex items-center gap-6">
           <Pencil className="cursor-pointer w-4 h-4" />
-          <Trash onClick={""} className="cursor-pointer w-4 h-4" />
+          {/* <Trash onClick={""} className="cursor-pointer w-4 h-4" /> */}
         </div>
       );
     },

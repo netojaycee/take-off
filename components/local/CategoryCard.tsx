@@ -15,19 +15,23 @@ export default function CategoryCard({
 }) {
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = React.useState(false);
-
+// console.log(data.thumbnail.url)
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-[177px]">
       <Link
-        href={`/products?category=electronics`}
-        className="bg-[#F6F6F6] p-5 flex items-center justify-center"
+        href={`/products?category=${data.slug}`} // Using dynamic category
+        className="bg-[#F6F6F6] p-2 w-full h-[176px] rounded-lg" // Fixed size and padding for consistency
       >
         <Image
+                  // src={"/images/head.png"}
+
           src={data.thumbnail.url || "/images/electronic-category.png"}
           alt={data.name || "category Image"}
-          width={150}
-          height={120}
-          className="object-cover w-full"
+          width={154} // Reduced size for better fit inside container
+          height={150} // Keep proportional
+          className="object-contain object-center w-full h-full max-w-full max-h-full" // Ensures image fits within box without cropping
+          quality={95}
+          priority
         />
       </Link>
 
@@ -40,7 +44,7 @@ export default function CategoryCard({
         {profile && (
           <div className="flex gap-4 items-center">
             <SquarePen
-              onClick={() => router.push(`/all-category/jdhsjhdjs`)}
+              onClick={() => router.push(`/all-category/${data._id}`)}
               className="w-5 h-5 cursor-pointer"
             />
             <Trash

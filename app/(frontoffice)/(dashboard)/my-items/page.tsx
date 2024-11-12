@@ -40,7 +40,7 @@ export default function MyItems() {
         </div>
       </div>
       
-      <PaginationComponent />
+      {/* <PaginationComponent /> */}
     </div>
   );
 }

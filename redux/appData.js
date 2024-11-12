@@ -188,6 +188,31 @@ export const productsApi = createApi({
       invalidatesTags: ["Category"],
     }),
 
+    getCategoryById: builder.query({
+      query: (id) => ({
+        url: `/category/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    editCategory: builder.mutation({
+      query: ({ formData, id }) => ({
+        url: `/category/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category edit failed:", err);
+        }
+      },
+      invalidatesTags: ["Category"],
+    }),
+
     // getAllProduct: builder.query({
     //   query: () => "/products",
     //   providesTags: ["Product"],
@@ -477,7 +502,8 @@ export const {
   useAddCategoryMutation,
   useGetAllCategoryQuery,
   useDeleteCategoryMutation,
-
+  useGetCategoryByIdQuery,
+  useEditCategoryMutation,
 
   // useLoginMutation,
   // useContactMutation,

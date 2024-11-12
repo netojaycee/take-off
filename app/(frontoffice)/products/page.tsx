@@ -119,13 +119,13 @@ export default function Products() {
             {/* Placeholder Product Cards */}
             {Array.from({ length: 9 }).map((_, index) => (
               <div key={index}>
-                <ProductCard />
+                <ProductCard data={""}/>
               </div>
             ))}
           </div>
 
           {/* Pagination */}
-          <PaginationComponent />
+          {/* <PaginationComponent /> */}
         </div>
       </div>
     </>

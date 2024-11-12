@@ -5,11 +5,14 @@ import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Rating as ReactRating } from "@smastrom/react-rating";
 import * as React from "react";
+import { category } from "@/types";
 
 export default function ViewCategory({
   isEditing,
   setIsEditing,
+  data,
 }: {
+  data: category;
   isEditing: boolean;
   setIsEditing: Function;
 }) {
@@ -21,6 +24,7 @@ export default function ViewCategory({
             <div className="w-[250px] h-[200px]">
               <Image
                 src={
+                  data.thumbnail.url ||
                   "https://via.placeholder.com/250x200.png?text=Click+to+upload+image"
                 }
                 alt="Profile Preview"
@@ -30,16 +34,13 @@ export default function ViewCategory({
               />
             </div>
           </div>
-
-          {/* Hidden Input for Image Upload */}
-          <div className="flex gap-1"></div>
         </div>
 
         <div className="w-full flex-col flex gap-5">
           {/* Other form fields */}
           <div className="space-y-3 ">
             <h1 className="text-[16px] md:text-[20px] lg:text-2xl font-bold">
-              JBL Headphone
+              {data.name}
             </h1>
           </div>
 

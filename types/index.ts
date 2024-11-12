@@ -21,7 +21,7 @@ export interface Thumbnail {
 }
 
 export interface category {
-  id: string;
+  _id: string;
   name: string;
   thumbnail: Thumbnail;
 
