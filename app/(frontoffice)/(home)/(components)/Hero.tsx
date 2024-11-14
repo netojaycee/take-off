@@ -42,19 +42,19 @@ export default function Hero() {
                 </Card>
               </div> */}
 
-              <div key={index} className="mb-5 relative w-full lg:h-[400px]">
+              <div key={index} className="mb-5 relative w-full md:h-[400px]">
                 <Image
                   src="/images/hero.jpeg"
                   alt=""
-                  className="rounded-[30px] w-full h-full lg:object-cover"
+                  className="rounded-[30px] w-full h-full object-cover"
                   width={370}
                   height={495}
                   loading="lazy"
                 />
                 {/* Black overlay */}
                 <div className="absolute inset-0 bg-black opacity-45 rounded-[30px]"></div>
-                <div className="absolute top-20 left-[35px] lg:left-[70px] rounded-lg flex flex-col gap-3 lg:gap-10 justify-start items-start">
-                  <h2 className="text-white text-[20px] lg:text-[35px] font-bold text-left">
+                <div className="absolute top-20 left-[35px] md:left-[70px] rounded-lg flex flex-col gap-3 md:gap-10 justify-start items-start">
+                  <h2 className="text-white text-[20px] md:text-[35px] font-bold text-left">
                     50% off on all home <br />
                     appliances
                   </h2>

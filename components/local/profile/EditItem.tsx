@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -68,7 +68,12 @@ export default function EditItem({
   ] = useAddProductMutation();
 
   const [globalError, setGlobalError] = useState<string>("");
-  const [imageFile, setImageFile] = useState<(File | null)[]>([]);
+  const [imageFile, setImageFile] = useState<(File | null)[]>([
+    null,
+    null,
+    null,
+    null,
+  ]);
   const [imagePreviews, setImagePreviews] = useState<(string | null)[]>([
     "/images/thumbnail1.png",
     "/images/thumbnail2.png",
@@ -94,6 +99,15 @@ export default function EditItem({
     index: number
   ) => {
     const file = event.target.files?.[0] || null;
+    setImageFile((prevFiles) => {
+      console.log(type);
+      const newFiles = [...prevFiles];
+      newFiles[index] = file;
+      console.log(newFiles);
+
+      return newFiles;
+    });
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -107,10 +121,9 @@ export default function EditItem({
 
   const onSubmit = async (values: z.infer<typeof editItemSchema>) => {
     setGlobalError(""); // Reset global error before submission
-
+    console.log(type);
     try {
-      // if (type === "add") {
-        console.log("add");
+      if (type === "add") {
         const formData = new FormData();
 
         formData.append("name", values.name);
@@ -126,17 +139,38 @@ export default function EditItem({
         });
 
         const result = await addProduct(formData);
-        console.log(result);
-      // } else {
-      //   console.log("edit");
-      // }
-      console.log(values);
+      } else {
+        console.log("edit");
+      }
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
       console.error("An error occurred:", error);
     }
   };
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      toast.success("Product created successfully!");
+      form.reset(); // Reset form values to default
+      setImageFile([null, null, null, null]); // Clear the selected file
+      setImagePreviews([
+        "/images/thumbnail1.png",
+        "/images/thumbnail2.png",
+        "/images/thumbnail3.png",
+        "/images/thumbnail4.png",
+      ]);
+    } else if (isError) {
+      if ("data" in error && typeof error.data === "object") {
+        const errorMessage = (error.data as { message?: string })?.message;
+        setGlobalError(errorMessage || "Product creation failed.");
+        toast.error(errorMessage || "Product creation failed.");
+      } else {
+        setGlobalError("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  }, [isSuccess, isError, error, form]);
 
   return (
     <>
@@ -330,7 +364,7 @@ export default function EditItem({
               </div>
 
               <div className="w-full">
-                {isAddingProduct || isEditingProduct ? (
+                {isAddingProduct ? (
                   <Button
                     disabled
                     className="flex items-center justify-center gap-1 w-full"

@@ -5,52 +5,73 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { CustomDialog } from "./profile/CustomDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CategoryCard({
   profile,
   data,
+  isLoading,
 }: {
   profile?: boolean;
+  isLoading: boolean;
   data: any;
 }) {
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = React.useState(false);
-// console.log(data.thumbnail.url)
-  return (
-    <div className="flex flex-col w-[177px]">
-      <Link
-        href={`/products?category=${data.slug}`} // Using dynamic category
-        className="bg-[#F6F6F6] p-2 w-full h-[176px] rounded-lg" // Fixed size and padding for consistency
-      >
-        <Image
-                  // src={"/images/head.png"}
 
-          src={data.thumbnail.url || "/images/electronic-category.png"}
-          alt={data.name || "category Image"}
-          width={154} // Reduced size for better fit inside container
-          height={150} // Keep proportional
-          className="object-contain object-center w-full h-full max-w-full max-h-full" // Ensures image fits within box without cropping
-          quality={95}
-          priority
-        />
+  return (
+    <div className="flex flex-col ">
+      <Link
+        href={isLoading ? "#" : `/products?category=${data?._id}`}
+        className="bg-[#F6F6F6] p-2 w-full h-[85px] md:h-[176px] rounded-lg"
+      >
+        {isLoading ? (
+          <Skeleton className="w-full h-full object-contain bg-gray-400" />
+        ) : (
+          <Image
+            src={data.thumbnail?.url || "/images/electronic-category.png"}
+            alt={data.name || "Category Image"}
+            width={154}
+            height={150}
+            className="object-contain object-center w-full h-full"
+            quality={95}
+            priority
+          />
+        )}
       </Link>
 
       <div
-        className={`flex 
-        ${profile ? "justify-between" : "justify-center"}  items-center`}
+        className={`flex ${
+          profile ? "justify-between" : "justify-center"
+        } items-center`}
       >
-        <p className="text-center my-[2px]">{data?.name}</p>
+        {isLoading ? (
+          <Skeleton className="w-3/4 h-4 bg-gray-400 my-[2px]" />
+        ) : (
+          <p className="text-center my-[2px] text-[10px] md:text-[16px]">
+            {data?.name}
+          </p>
+        )}
 
         {profile && (
           <div className="flex gap-4 items-center">
-            <SquarePen
-              onClick={() => router.push(`/all-category/${data._id}`)}
-              className="w-5 h-5 cursor-pointer"
-            />
-            <Trash
-              onClick={() => setDialogOpen(true)}
-              className="w-5 h-5 cursor-pointer text-red-500"
-            />
+            {isLoading ? (
+              <>
+                <Skeleton className="w-5 h-5 bg-gray-400" />
+                <Skeleton className="w-5 h-5 bg-gray-400" />
+              </>
+            ) : (
+              <>
+                <SquarePen
+                  onClick={() => router.push(`/all-category/${data._id}`)}
+                  className="w-5 h-5 cursor-pointer"
+                />
+                <Trash
+                  onClick={() => setDialogOpen(true)}
+                  className="w-5 h-5 cursor-pointer text-red-500"
+                />
+              </>
+            )}
           </div>
         )}
       </div>

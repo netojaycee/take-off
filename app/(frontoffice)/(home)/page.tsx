@@ -9,23 +9,30 @@ import NewItemsProducts from "./(components)/NewItemsProducts";
 import TodaysDeals from "./(components)/TodaysDeals";
 import { useSelector } from "react-redux";
 import { RootState } from "@/types";
+import { useGetAllProductQuery } from "@/redux/appData";
+import { Loader } from "lucide-react";
 
 export default function Home() {
   const userData = useSelector((state: RootState) => state.auth.userData);
   const auth = useSelector((state: RootState) => state.auth.isAuthenticated);
   console.log(userData);
   console.log(auth);
+  const { data, isLoading } = useGetAllProductQuery(undefined);
+  
+  // const categories = data.category as category[];
+  const products = data;
+  console.log(products);
   return (
     <>
       <Hero />
 
       <Categories />
       <NewItemsBanner />
-      <NewItemsProducts />
+      <NewItemsProducts isLoading={isLoading} products={products} />
       <TodaysDeals />
-      <FeaturedItems />
+      <FeaturedItems isLoading={isLoading} products={products} />
       <BestSellingElec />
-      <BestSellingItems />
+      <BestSellingItems isLoading={isLoading} products={products} />
     </>
   );
 }

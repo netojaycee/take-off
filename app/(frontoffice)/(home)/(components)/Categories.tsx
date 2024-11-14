@@ -7,14 +7,8 @@ import React from "react";
 
 export default function Categories() {
   const { data, isLoading } = useGetAllCategoryQuery(undefined);
-  if (isLoading) {
-    return (
-      <div className="h-96 flex items-center justify-center">
-        <Loader className="animate-spin" />
-      </div>
-    );
-  }
-  const categories = data.category as category[];
+
+  const categories = data?.category as category[];
   return (
     <div className="flex flex-col gap-5">
       <div className=" flex items-center justify-between">
@@ -26,13 +20,17 @@ export default function Categories() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-        {categories &&
-          categories.map((category, index) => (
-            <div key={index}>
-              <CategoryCard data={category} />
-            </div>
-          ))}
+      <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
+        {isLoading
+          ? Array.from({ length: 12 }).map((_, index) => (
+              <CategoryCard data={""} key={index} isLoading={true} />
+            ))
+          : categories &&
+            categories.slice(0, 12).map((category, index) => (
+              <div key={index}>
+                <CategoryCard isLoading={isLoading} data={category} />
+              </div>
+            ))}
       </div>
     </div>
   );

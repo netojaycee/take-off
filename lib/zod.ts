@@ -94,9 +94,13 @@ export const editItemSchema = z
             .string({ required_error: "Description is required" })
             .min(1, "Description is required"),
         quantity: z
-            .string({ required_error: "Stock is required" })
-            .min(1, "Stock is required"),
-        images: z.array(z.string()).min(4, 'Product must have 4 images'),
+            .string({ required_error: "Quantity is required" })
+            .min(1, "Quantity is required"),
+        images: z
+            .array(z.instanceof(File, { message: "Each image must be a file" }))
+            // .min(4, { message: "Product must have at least 4 images" })
+            // .max(4, { message: "Product can only have 4 images" })
+            .optional(),
 
     });
 
@@ -112,25 +116,25 @@ export const loginSchema = z.object({
 
 export const createCategorySchema = z.object({
     name: z
-      .string({ required_error: "Category name is required" })
-      .min(1, "Category name is required"),
+        .string({ required_error: "Category name is required" })
+        .min(1, "Category name is required"),
     thumbnail: z
-      .instanceof(File, { message: "Image is required" })
-      .optional(), // Make it optional to allow for empty fields before file is selected
-  });
-  
+        .instanceof(File, { message: "Image is required" })
+        .optional(), // Make it optional to allow for empty fields before file is selected
+});
 
 
-  //     how can structure my image to be sent in body as json den
 
-    // cause my backend does something like this
+//     how can structure my image to be sent in body as json den
 
-    // async createCategory(body: any, files: any) {
-    // const { name } = body;
-    // let { thumbnail } = files;
+// cause my backend does something like this
 
-    // try {
-    // if (!thumbnail) {
-    // throw new unprocessableentitiyexception("image required")}
+// async createCategory(body: any, files: any) {
+// const { name } = body;
+// let { thumbnail } = files;
 
-    // }
+// try {
+// if (!thumbnail) {
+// throw new unprocessableentitiyexception("image required")}
+
+// }

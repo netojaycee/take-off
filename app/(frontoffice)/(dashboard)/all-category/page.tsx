@@ -14,19 +14,13 @@ import { category } from "@/types";
 
 export default function AllCategory() {
   const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 15;
+  const itemsPerPage = 12;
 
   const { data, isLoading, error } = useGetAllCategoryQuery(undefined);
-  if (isLoading) {
-    return (
-      <div className="h-96 flex items-center justify-center">
-        <Loader className="animate-spin" />
-      </div>
-    );
-  }
+ 
 
   const categories = data?.category as category[];
-  const totalPages = Math.ceil(categories.length / itemsPerPage);
+  const totalPages = Math.ceil(categories?.length / itemsPerPage);
 
   // Get items for the current page
   const currentCategories =
@@ -42,7 +36,7 @@ export default function AllCategory() {
 
   console.log(categories);
   const totalPerPage =
-    categories && categories.length < 15 ? categories.length : 15;
+    categories && categories?.length < 15 ? categories?.length : 15;
 
   return (
     <div className="py-5 px-5 md:py-[50px] md:px-[70px] border rounded-md ">
@@ -51,8 +45,8 @@ export default function AllCategory() {
           <div className="flex items-center gap-2">
             <h2 className="text-2xl font-semibold">All Categories</h2>
             <p className="text-xs md:text-sm text-gray-500 hidden md:block">
-              Showing {currentCategories.length} results from total{" "}
-              {categories && categories.length}
+              Showing {currentCategories?.length} results from total{" "}
+              {categories && categories?.length}
             </p>
           </div>
           {/* <div className="">
@@ -70,12 +64,16 @@ export default function AllCategory() {
           {error && (
             <div className="">{JSON.stringify(error)} NO CATEGORIES FOUND</div>
           )}
-          {currentCategories &&
-            currentCategories.map((category, index) => (
-              <div key={index}>
-                <CategoryCard data={category} profile />
-              </div>
-            ))}
+          {isLoading
+            ? Array.from({ length: 12 }).map((_, index) => (
+                <CategoryCard data={""} key={index} isLoading={true} />
+              ))
+            : currentCategories &&
+              currentCategories.map((category, index) => (
+                <div key={index}>
+                  <CategoryCard isLoading={isLoading} data={category} profile />
+                </div>
+              ))}
         </div>
       </div>
       <PaginationComponent

@@ -232,7 +232,7 @@ export const productsApi = createApi({
 
     editProduct: builder.mutation({
       query: ({ formData, id }) => ({
-        url: `/product/${id}`,
+        url: `/product/update/${id}`,
         method: "PATCH",
         body: formData,
       }),
@@ -247,6 +247,37 @@ export const productsApi = createApi({
       },
       invalidatesTags: ["Product"],
     }),
+    getAllProduct: builder.query({
+      query: () => "/product/all",
+      providesTags: ["Product"],
+      headers: { "Content-Type": "application/json" },
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: `/product/${id}`,
+        method: "DELETE",
+        // body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category delete failed:", err);
+        }
+      },
+      invalidatesTags: ["Product"],
+    }),
+
+    getProductById: builder.query({
+      query: (id) => ({
+        url: `/product/${id}`,
+        method: "GET",
+      }),
+    }),
+
 
     // getAllProduct: builder.query({
     //   query: () => "/products",
@@ -543,6 +574,9 @@ export const {
 
   useAddProductMutation,
   useEditProductMutation,
+  useGetAllProductQuery,
+  useDeleteProductMutation,
+  useGetProductByIdQuery,
 
   // useLoginMutation,
   // useContactMutation,

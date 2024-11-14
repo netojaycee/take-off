@@ -19,8 +19,22 @@ import {
 } from "@/components/ui/sheet";
 import { persistor } from "@/redux/store";
 import Cookies from "js-cookie";
+import { useGetAllCategoryQuery } from "@/redux/appData";
+import { category } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FaAngleRight } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { RootState } from "@/types";
 
 export default function Header({ auth }: { auth?: boolean }) {
+  const {
+    data,
+    isLoading: isLoadingCategory,
+    error,
+  } = useGetAllCategoryQuery(undefined);
+  const categories = data?.category as category[];
+  const session = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const userData = useSelector((state: RootState) => state.auth.userData);
 
   const handleLogout = async () => {
     try {
@@ -61,7 +75,7 @@ export default function Header({ auth }: { auth?: boolean }) {
                 Cart
                 <BiSolidCart className="w-5 h-5" />
               </Link>
-              <Link href="/signin">
+              <Link href={`${session ? "/dashboard" : "/signin"}`}>
                 <FaUserCircle className="w-6 h-6" />
               </Link>
             </div>
@@ -138,7 +152,30 @@ export default function Header({ auth }: { auth?: boolean }) {
                         </Link>
                       </SheetClose>
                     </li>
-
+                    {session && userData?.role === "admin" && (
+                      <>
+                        <li>
+                          <SheetClose asChild>
+                            <Link
+                              href="/add-items"
+                              className="block font-medium text-gray-800"
+                            >
+                              All Categories
+                            </Link>
+                          </SheetClose>
+                        </li>
+                        <li>
+                          <SheetClose asChild>
+                            <Link
+                              href="/add-items"
+                              className="block font-medium text-gray-800"
+                            >
+                              Add Categories
+                            </Link>
+                          </SheetClose>
+                        </li>
+                      </>
+                    )}
                     <hr className="my-4 border-gray-300" />
 
                     <li className="flex items-center justify-between">
@@ -154,45 +191,29 @@ export default function Header({ auth }: { auth?: boolean }) {
                         </Link>
                       </SheetClose>
                     </li>
+
                     <li>
-                      <SheetClose asChild>
-                        <Link
-                          href="#"
-                          className="block font-medium text-gray-800"
-                        >
-                          Appliances
-                        </Link>
-                      </SheetClose>
-                    </li>
-                    <li>
-                      <SheetClose asChild>
-                        <Link
-                          href="#"
-                          className="block font-medium text-gray-800"
-                        >
-                          Electronics
-                        </Link>
-                      </SheetClose>
-                    </li>
-                    <li>
-                      <SheetClose asChild>
-                        <Link
-                          href="#"
-                          className="block font-medium text-gray-800"
-                        >
-                          Furniture
-                        </Link>
-                      </SheetClose>
-                    </li>
-                    <li>
-                      <SheetClose asChild>
-                        <Link
-                          href="#"
-                          className="block font-medium text-gray-800"
-                        >
-                          Phones and Tablets
-                        </Link>
-                      </SheetClose>
+                      {isLoadingCategory
+                        ? Array.from({ length: 10 }).map((_, index) => (
+                            <Skeleton
+                              key={index}
+                              className="w-3/4 h-5 bg-gray-400 my-3"
+                            />
+                          ))
+                        : categories &&
+                          categories.map((category, index) => (
+                            <SheetClose key={index} asChild>
+                              <Link
+                                href={`/products?category=${category._id}`}
+                                className="rounded-md flex justify-between items-center hover:transform duration-300 hover:scale-105 hover:bg-gray-200 p-1"
+                              >
+                                <span className="line-clamp-1 w-full">
+                                  {category?.name}
+                                </span>{" "}
+                                <FaAngleRight />
+                              </Link>
+                            </SheetClose>
+                          ))}
                     </li>
 
                     <hr className="my-4 border-gray-300" />
@@ -218,7 +239,7 @@ export default function Header({ auth }: { auth?: boolean }) {
                       </SheetClose>
                     </li>
 
-                    <li>
+                    {/* <li>
                       <SheetClose asChild>
                         <Link
                           href="#"
@@ -227,15 +248,24 @@ export default function Header({ auth }: { auth?: boolean }) {
                           Delete Account
                         </Link>
                       </SheetClose>
-                    </li>
+                    </li> */}
                     <li>
                       <SheetClose asChild>
-                        <span
-                          onClick={handleLogout}
-                          className="block font-medium text-red-600 cursor-pointer"
-                        >
-                          Log out
-                        </span>
+                        {session ? (
+                          <span
+                            onClick={handleLogout}
+                            className="block font-medium text-red-600 cursor-pointer"
+                          >
+                            Log out
+                          </span>
+                        ) : (
+                          <Link
+                            href={"signin"}
+                            className="block font-medium text-red-600 cursor-pointer"
+                          >
+                            Log in
+                          </Link>
+                        )}
                       </SheetClose>
                     </li>
                   </ul>

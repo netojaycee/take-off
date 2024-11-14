@@ -141,7 +141,7 @@ export default function Cart() {
           </div>
         </div>
       </div>
-      <div className="my-3 md:my-6 flex flex-col gap-2 w-full">
+      {/* <div className="my-3 md:my-6 flex flex-col gap-2 w-full">
         <h1 className="text-[14px] md:text-[16px] lg:text-xl font-semibold">
           You may also like
         </h1>
@@ -153,7 +153,7 @@ export default function Cart() {
             loop: true,
           }}
         />
-      </div>
+      </div> */}
     </>
   );
 }

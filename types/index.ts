@@ -27,6 +27,24 @@ export interface category {
 
 }
 
+export type ProductImage = {
+  url: string;
+  id: string;
+  _id: string;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  images: ProductImage[];
+  thumbnail: string;
+  categoryName: string;
+};
+
+
 
 // types.ts
 export interface UserData {
