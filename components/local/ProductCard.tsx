@@ -2,11 +2,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { BiSolidCart } from "react-icons/bi";
 import { SquarePen, ShoppingCart, Trash, Heart } from "lucide-react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { CustomDialog } from "./profile/CustomDialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "@/redux/slices/favoriteSlice";
+import { FavoritesState, Product } from "@/types";
 
 export default function ProductCard({
   profile,
@@ -15,12 +22,33 @@ export default function ProductCard({
   p,
 }: {
   profile?: boolean;
-  data: any;
+  data?: Product | undefined;
   isLoading: boolean;
   p?: boolean;
 }) {
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = React.useState(false);
+  const dispatch = useDispatch();
+
+  // const cart = useSelector((state) => state.cart);
+  // console.log(cart);
+  const favoriteItems: Product[] = useSelector(
+    (state: FavoritesState) => state.favorites.favoriteItems
+  );
+  // console.log(favoriteItems);
+  const isFavorite = favoriteItems.some((item) => item.id === data?.id);
+
+  const handleAddToCart = (data: Product | undefined) => {
+    dispatch(addToCart(data));
+  };
+
+  const handleToggleFavorite = (data: Product | undefined) => {
+    if (!isFavorite) {
+      dispatch(addToFavorites(data));
+    } else {
+      dispatch(removeFromFavorites(data));
+    }
+  };
   return (
     <div className={`${p ? "  " : "  "} flex flex-col`}>
       <Link
@@ -58,7 +86,7 @@ export default function ProductCard({
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",
-                }).format(data?.price)}
+                }).format(Number(data?.price))}
               </h2>
             </>
           )}
@@ -93,12 +121,19 @@ export default function ProductCard({
           </div>
         ) : (
           <div className="flex gap-4 items-center">
-            <Heart
-              onClick={() => router.push(`/cart`)}
-              className="w-5 h-5 cursor-pointer"
-            />
+            {isFavorite ? (
+              <FaHeart
+                className="cursor-pointer w-5 h-5 text-red-500"
+                onClick={() => handleToggleFavorite(data)}
+              />
+            ) : (
+              <FaRegHeart
+                className="cursor-pointer w-5 h-5 text-red-500"
+                onClick={() => handleToggleFavorite(data)}
+              />
+            )}
             <ShoppingCart
-              onClick={() => router.push(`/cart`)}
+              onClick={() => handleAddToCart(data)}
               className="w-5 h-5 cursor-pointer"
             />
           </div>

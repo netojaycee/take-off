@@ -67,7 +67,7 @@ export default function MyItems() {
                 </div>
               ))
             : Array.from({ length: itemsPerPage }).map((_, index) => (
-                <ProductCard data={""} key={index} isLoading={true} profile />
+                <ProductCard key={index} isLoading={true} profile />
               ))}
         </div>
       </div>

@@ -13,7 +13,6 @@ export default function CategoryDetails({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const { data, isLoading } = useGetCategoryByIdQuery(params.id);
-  if (isLoading) return <div>Loading...</div>;
   console.log(data);
   return (
     <div className="py-5 px-5 md:py-[50px] md:px-[70px] border rounded-md ">
@@ -21,13 +20,15 @@ export default function CategoryDetails({
         <EditCategory
           isEditing={isEditing}
           setIsEditing={setIsEditing}
-          data={data.category}
+          data={data?.category}
+          isLoading={isLoading}
         />
       ) : (
         <ViewCategory
-          data={data.category}
+          data={data?.category}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
+          isLoading={isLoading}
         />
       )}
     </div>

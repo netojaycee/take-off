@@ -19,7 +19,7 @@ export default function CustomCarousel({
           <Carousel customControls={false} controlAlignment="center" opts={carouselOpts}>
 
       <CarouselContent className="-ml-1">
-        {items.map((item: any, index: number) => (
+        {items && items.map((item: any, index: number) => (
           <CarouselItem
             key={index}
             className="pl-1 basis-1/3 lg:basis-1/4"

@@ -45,6 +45,25 @@ export type Product = {
 };
 
 
+export type CartItem = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  images: ProductImage[];
+  thumbnail: string;
+  categoryName: string;
+  cartQuantity: number;
+};
+
+export interface CartType {
+  cartItems: CartItem[]; // An array of CartItems
+  cartTotalQuantity: number; // Total number of items in the cart
+  cartTotalAmount: number; // Total amount of the cart
+}
+
+
 
 // types.ts
 export interface UserData {
@@ -64,4 +83,12 @@ export interface AuthState {
 
 export interface RootState {
   auth: AuthState; // Add other slices here as needed
+}
+
+export interface favoriteItems {
+  favoriteItems: Product[];
+}
+
+export interface FavoritesState {
+  favorites: favoriteItems;
 }

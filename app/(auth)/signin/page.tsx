@@ -20,7 +20,7 @@ import ErrorMessage from "@/components/local/errorMessage";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { useLoginMutation } from "@/redux/appData";
+import { useGetGoogleSigninQuery, useLoginMutation } from "@/redux/appData";
 import { loginSchema } from "@/lib/zod";
 import { jwtDecode } from "jwt-decode";
 
@@ -37,6 +37,13 @@ export default function Signin() {
       error: errorLogin,
     },
   ] = useLoginMutation();
+
+  const {
+    data: googleSigninData,
+    isLoading: googleSigninLoading,
+    isError: googleSigninError,
+    error: googleSigninErrorDetail,
+  } = useGetGoogleSigninQuery(undefined);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -57,6 +64,20 @@ export default function Signin() {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
       console.error("An error occurred:", error);
+    }
+  };
+
+  const handleGoogleSignin = async () => {
+    try {
+      // Trigger the Google sign-in endpoint
+      if (!googleSigninLoading) {
+        const result = await googleSigninData; // or whatever the response you expect
+        // You can handle the data here (e.g., store the token in Redux or navigate to a different page)
+        console.log(result);
+      }
+    } catch (error) {
+      toast.error("Google sign-in failed. Please try again.");
+      console.error("Google sign-in error:", error);
     }
   };
 
@@ -155,7 +176,12 @@ export default function Signin() {
           <Separator className="w-[40%]" />
         </div>
         <form className="w-full flex flex-col gap-2">
-          <Button variant="outline" className="w-full" type="submit">
+          <Button
+            onClick={handleGoogleSignin}
+            variant="outline"
+            className="w-full"
+            type="submit"
+          >
             {/* <GoogleI className="h-4 w-4 mr-2" />
              */}
             <svg

@@ -66,7 +66,7 @@ export default function AllCategory() {
           )}
           {isLoading
             ? Array.from({ length: 12 }).map((_, index) => (
-                <CategoryCard data={""} key={index} isLoading={true} />
+                <CategoryCard  key={index} isLoading={true} />
               ))
             : currentCategories &&
               currentCategories.map((category, index) => (

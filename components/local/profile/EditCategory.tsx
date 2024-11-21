@@ -24,10 +24,12 @@ export default function EditCategory({
   isEditing,
   setIsEditing,
   data,
+  isLoading,
 }: {
   data: category;
   isEditing: boolean;
   setIsEditing: Function;
+  isLoading: boolean;
 }) {
   const [globalError, setGlobalError] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);

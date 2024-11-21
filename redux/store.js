@@ -6,8 +6,8 @@ import storage from "redux-persist/lib/storage";
 import { productsApi } from "./appData";
 import authReducer from "./slices/authSlice";
 // import userReducer from "./slices/userSlice";
-// import cartReducer from "./slices/cartSlice";
-// import favoritesReducer from "./slices/favoriteSlice";
+import cartReducer from "./slices/cartSlice";
+import favoritesReducer from "./slices/favoriteSlice";
 
 
 const persistConfig = {
@@ -22,8 +22,8 @@ export const store = configureStore({
     [productsApi.reducerPath]: productsApi.reducer,
     auth: persistedAuthReducer,
     // user: userReducer,
-    // cart: cartReducer,
-    // favorites: favoritesReducer,
+    cart: cartReducer,
+    favorites: favoritesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -2,21 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { clearCredentials, setCredentials } from "./slices/authSlice";
-// import { clearUserInfo } from "./slices/userSlice";
-// import { setUserInfo } from "./slices/userSlice";
 
 const baseQuery = fetchBaseQuery({
   // baseUrl: "http://localhost:5000/api/",
   baseUrl: "https://take-off-r3fp.onrender.com/",
   prepareHeaders: (headers) => {
-    // Only set "Content-Type" to "application/json" if body is not FormData
-    // if (!(body instanceof FormData)) {
-    //   headers.set('Content-Type', 'application/json');
-    // } else {
-    //   // Remove any previously set Content-Type for FormData to avoid conflicts
-    //   headers.delete('Content-Type');
-    // }
-
     const token = Cookies.get("token");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
@@ -252,6 +242,11 @@ export const productsApi = createApi({
       providesTags: ["Product"],
       headers: { "Content-Type": "application/json" },
     }),
+    getAllProductFeatured: builder.query({
+      query: () => "/product/featured",
+      // providesTags: ["Product"],
+      headers: { "Content-Type": "application/json" },
+    }),
 
     deleteProduct: builder.mutation({
       query: (id) => ({
@@ -277,8 +272,10 @@ export const productsApi = createApi({
         method: "GET",
       }),
     }),
-
-
+    getGoogleSignin: builder.query({
+      query: () => "/google",
+      // headers: { "Content-Type": "application/json" },
+    }),
     // getAllProduct: builder.query({
     //   query: () => "/products",
     //   providesTags: ["Product"],
@@ -575,8 +572,11 @@ export const {
   useAddProductMutation,
   useEditProductMutation,
   useGetAllProductQuery,
+  useGetAllProductFeaturedQuery,
   useDeleteProductMutation,
   useGetProductByIdQuery,
+
+  useGetGoogleSigninQuery,
 
   // useLoginMutation,
   // useContactMutation,

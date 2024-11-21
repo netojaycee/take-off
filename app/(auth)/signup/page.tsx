@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/local/errorMessage";
-import { useRegisterMutation } from "@/redux/appData";
+import { useGetGoogleSigninQuery, useRegisterMutation } from "@/redux/appData";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
@@ -44,6 +44,13 @@ export default function Signup() {
     },
   ] = useRegisterMutation();
 
+  const {
+    data: googleSigninData,
+    isLoading: googleSigninLoading,
+    isError: googleSigninError,
+    error: googleSigninErrorDetail,
+  } = useGetGoogleSigninQuery(undefined);
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -66,6 +73,21 @@ export default function Signup() {
       console.error("An error occurred:", error);
     }
   };
+
+  const handleGoogleSignin = async () => {
+    try {
+      // Trigger the Google sign-in endpoint
+      if (!googleSigninLoading) {
+        const result = await googleSigninData; // or whatever the response you expect
+        // You can handle the data here (e.g., store the token in Redux or navigate to a different page)
+        console.log(result);
+      }
+    } catch (error) {
+      toast.error("Google sign-in failed. Please try again.");
+      console.error("Google sign-in error:", error);
+    }
+  };
+
 
   React.useEffect(() => {
     if (isSuccessRegister) {
@@ -219,7 +241,7 @@ export default function Signup() {
           <Separator className="w-[40%]" />
         </div>
         <form className="w-full flex flex-col gap-2">
-          <Button variant="outline" className="w-full" type="submit">
+          <Button onClick={handleGoogleSignin} variant="outline" className="w-full" type="submit">
             {/* <GoogleI className="h-4 w-4 mr-2" />
              */}
             <svg

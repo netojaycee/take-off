@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 const initialState = {
-  favoriteItems: localStorage.getItem("favoriteItems")
-    ? JSON.parse(localStorage.getItem("favoriteItems"))
-    : [],
+  favoriteItems:
+    typeof window !== "undefined" && localStorage.getItem("favoriteItems")
+      ? JSON.parse(localStorage.getItem("favoriteItems"))
+      : [],
 };
 
 const favoritesSlice = createSlice({
@@ -11,18 +13,37 @@ const favoritesSlice = createSlice({
   initialState,
   reducers: {
     addToFavorites(state, action) {
-      const { _id } = action.payload;
-      if (!state.favoriteItems.some((item) => item._id === _id)) {
+      const { id } = action.payload;
+      if (!state.favoriteItems.some((item) => item.id === id)) {
         state.favoriteItems.push(action.payload);
-        localStorage.setItem("favoriteItems", JSON.stringify(state.favoriteItems));
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            "favoriteItems",
+            JSON.stringify(state.favoriteItems)
+          );
+        }
+        toast.success(`${action.payload.name} added to Wishlist`, {
+          position: "bottom-left",
+        });
       }
+
+      console.log("slice", state.favoriteItems);
     },
     removeFromFavorites(state, action) {
       const nextFavoriteItems = state.favoriteItems.filter(
-        (item) => item._id !== action.payload._id
+        (item) => item.id !== action.payload.id
       );
+
       state.favoriteItems = nextFavoriteItems;
-      localStorage.setItem("favoriteItems", JSON.stringify(state.favoriteItems));
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "favoriteItems",
+          JSON.stringify(state.favoriteItems)
+        );
+      }
+      toast.error(`${action.payload.name} removed from Wishlist`, {
+        position: "bottom-left",
+      });
     },
   },
 });

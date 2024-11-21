@@ -14,7 +14,7 @@ export default function CategoryCard({
 }: {
   profile?: boolean;
   isLoading: boolean;
-  data: any;
+  data?: any;
 }) {
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = React.useState(false);

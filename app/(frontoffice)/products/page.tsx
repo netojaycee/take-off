@@ -176,7 +176,7 @@ export default function Products() {
           <div className="grid grid-cols-3 gap-4 mb-6">
             {isLoading
               ? Array.from({ length: itemsPerPage }).map((_, i) => (
-                  <ProductCard data={""} key={i} isLoading={true} />
+                  <ProductCard  key={i} isLoading={true} />
                 ))
               : currentSortedProducts.map((product) => (
                   <ProductCard

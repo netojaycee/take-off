@@ -23,7 +23,7 @@ export default function Categories() {
       <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
         {isLoading
           ? Array.from({ length: 12 }).map((_, index) => (
-              <CategoryCard data={""} key={index} isLoading={true} />
+              <CategoryCard  key={index} isLoading={true} />
             ))
           : categories &&
             categories.slice(0, 12).map((category, index) => (
