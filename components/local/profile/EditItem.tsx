@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
-import { Camera, Loader } from "lucide-react";
+import { Camera, Info, Loader } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -40,9 +40,11 @@ export default function EditItem({
   setIsEditing,
   data,
   type,
+  isLoading,
 }: {
   data?: any;
   isEditing?: boolean;
+  isLoading?: boolean;
   setIsEditing?: Function;
   type: string;
 }) {
@@ -56,10 +58,10 @@ export default function EditItem({
   const [
     editProduct,
     {
-      isLoading: isEditingProduct,
-      isSuccess: isSuccessProduct,
-      isError: isErrorProduct,
-      error: errorProduct,
+      isLoading: isLoadingEdit,
+      isSuccess: isSuccessEditing,
+      isError: isErrorEditing,
+      error: errorEditing,
     },
   ] = useEditProductMutation();
   const [
@@ -74,6 +76,7 @@ export default function EditItem({
     null,
     null,
   ]);
+
   const [imagePreviews, setImagePreviews] = useState<(string | null)[]>([
     "/images/thumbnail1.png",
     "/images/thumbnail2.png",
@@ -81,14 +84,24 @@ export default function EditItem({
     "/images/thumbnail4.png",
   ]);
 
+  React.useEffect(() => {
+    if (data?.images) {
+      // Map through the images array to extract URLs
+      const urls = data.images.map(
+        (image: { url: string }) => image.url || null
+      );
+      setImagePreviews(urls);
+    }
+  }, [data?.images]);
+
   const form = useForm<z.infer<typeof editItemSchema>>({
     resolver: zodResolver(editItemSchema),
     defaultValues: {
-      name: "",
-      categoryId: "",
-      price: "",
-      quantity: "",
-      description: "",
+      name: type === "edit" ? data?.name : "",
+      categoryId: type === "edit" ? data?.categoryId._id : "",
+      price: type === "edit" ? data?.price : "",
+      quantity: type === "edit" ? data?.quantity : "",
+      description: type === "edit" ? data?.description : "",
       images: [],
     },
   });
@@ -138,9 +151,24 @@ export default function EditItem({
           }
         });
 
-        const result = await addProduct(formData);
+        await addProduct(formData);
       } else {
-        console.log("edit");
+        const formData = new FormData();
+
+        formData.append("name", values.name);
+        formData.append("description", values.description);
+        formData.append("categoryId", values.categoryId);
+        formData.append("quantity", values.quantity.toString());
+        formData.append("price", values.price.toString());
+
+        imageFile.forEach((file, index) => {
+          if (file) {
+            formData.append("images", file); // Append each file to "images"
+          }
+        });
+
+        const result = await editProduct({ formData, id: data?.id });
+        console.log("f", result);
       }
     } catch (error) {
       toast.error("An unexpected error occurred.");
@@ -148,6 +176,31 @@ export default function EditItem({
       console.error("An error occurred:", error);
     }
   };
+
+  React.useEffect(() => {
+    if (isSuccessEditing) {
+      toast.success("Product updated successfully!");
+      form.reset(); // Reset form values to default
+      setImageFile([null, null, null, null]); // Clear the selected file
+      setImagePreviews([
+        "/images/thumbnail1.png",
+        "/images/thumbnail2.png",
+        "/images/thumbnail3.png",
+        "/images/thumbnail4.png",
+      ]);
+      // setIsEditing(false);
+    } else if (isErrorEditing) {
+      if ("data" in errorEditing && typeof errorEditing.data === "object") {
+        const errorMessage = (errorEditing.data as { message?: string })
+          ?.message;
+        setGlobalError(errorMessage || "Product edit failed.");
+        toast.error(errorMessage || "Product edit failed.");
+      } else {
+        setGlobalError("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  }, [isSuccessEditing, isErrorEditing, errorEditing, form]);
 
   React.useEffect(() => {
     if (isSuccess) {
@@ -182,6 +235,10 @@ export default function EditItem({
             className="flex gap-3 md:flex-row flex-col  items-center"
           >
             <div className="w-full md:w-1/2 flex flex-col">
+              <div className="flex gap-2 items-center text-xs mb-2">
+                <Info className="w-3 h-3" /> Upload at least one image to
+                proceed.
+              </div>
               {/* Main Image */}
               <div className="relative w-full h-auto mb-4 bg-[#F2F2F2] rounded-md shadow-md p-4 flex items-center justify-center">
                 <div className="w-[300px] h-[300px]">
@@ -364,7 +421,7 @@ export default function EditItem({
               </div>
 
               <div className="w-full">
-                {isAddingProduct ? (
+                {isAddingProduct || isLoadingEdit ? (
                   <Button
                     disabled
                     className="flex items-center justify-center gap-1 w-full"

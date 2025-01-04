@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
           type="date"
           className="max-w-xs"
           onChange={(event) =>
-            table.getColumn("date")?.setFilterValue(event.target.value)
+            table.getColumn("paidAt")?.setFilterValue(event.target.value)
           }
         />
       </div>
@@ -113,7 +113,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns?.length}
                   className="h-24 text-center"
                 >
                   No results.

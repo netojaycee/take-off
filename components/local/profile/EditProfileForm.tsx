@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,6 +19,12 @@ import ErrorMessage from "@/components/local/errorMessage";
 import toast from "react-hot-toast";
 import { editProfileSchema } from "@/lib/zod";
 import { uploadImageToCloudinary } from "@/lib/Cloudinary";
+import { Separator } from "@/components/ui/separator";
+import { UserData } from "@/types";
+import {
+  useEditProfileMutation,
+  useGetUserDetailsQuery,
+} from "@/redux/appData";
 
 export default function EditProfileForm({
   isEditing,
@@ -29,17 +35,52 @@ export default function EditProfileForm({
 }) {
   const [globalError, setGlobalError] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview state
+  const [
+    editProfile,
+    { isLoading: isEditingProfile, isSuccess, isError, error },
+  ] = useEditProfileMutation();
+  const {
+    data: userDetail,
+    isLoading: isLoadingUserDetail,
+    error: errorUserDetail,
+  } = useGetUserDetailsQuery(undefined);
+  console.log(userDetail);
+  const userDetailData: UserData = userDetail?.data;
+  const [imagePreview, setImagePreview] = useState<string | null>(""); // Image preview state
+
   const form = useForm<z.infer<typeof editProfileSchema>>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      contact: "",
-      address: "",
-      image: "jkjj",
+      email: userDetailData?.email || "",
+      name: userDetailData?.name || "",
+      address: userDetailData?.address || "",
+      contact: userDetailData?.phone || "",
+      password: "",
+      image: "",
     },
   });
+
+  React.useEffect(() => {
+    if (userDetail) {
+      form.reset({
+        email: userDetailData?.email || "",
+        name: userDetailData?.name || "",
+        address: userDetailData?.address || "",
+        contact: userDetailData?.phone || "",
+        image: "",
+        password: undefined,
+      });
+      setImagePreview(userDetailData?.image || "");
+    }
+  }, [
+    userDetailData?.email,
+    userDetailData?.name,
+    userDetailData?.address,
+    userDetailData?.phone,
+    userDetailData?.image,
+    form,
+    userDetail,
+  ]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -58,39 +99,36 @@ export default function EditProfileForm({
       "imageInput"
     ) as HTMLInputElement;
     if (inputElement) {
-      inputElement.click(); // Trigger file input click when image is clicked
+      inputElement.click();
     }
   };
 
   const onSubmit = async (values: z.infer<typeof editProfileSchema>) => {
     setGlobalError(""); // Reset global error before submission
-
+    console.log(values);
     try {
-      // Upload the image if it exists
-      //   if (imageFile) {
-      //     try {
-      //       const uploadedUrl = await uploadImageToCloudinary(imageFile);
-      //       values.image = uploadedUrl; // Add the image URL to the form values
-      //     } catch (error) {
-      //       console.error("Image upload failed:", error);
-      //       toast.error("Failed to upload image.");
-      //       return;
-      //     }
-      //   }
-      console.log(values);
-      setIsEditing(false);
-      //   const result = await handleRegister(values);
+      const formData = new FormData();
 
-      //   if (result?.success === false) {
-      //     toast.error(result.message);
-      //     setGlobalError(result.message); // Display error message
-      //   } else {
-      //     toast.success("Registration successful!");
-      //     const email = result.email || ""; // Provide a default value
-      //     router.push(
-      //       `/verify?email=${encodeURIComponent(email)}&action=register`
-      //     );
-      //   }
+      formData.append("name", values.name || "");
+      formData.append("email", values.email || "");
+      formData.append("address", values.address || "");
+      formData.append("contact", values.contact || "");
+      formData.append("password", values.password || "");
+
+      if (imageFile) {
+        formData.append("avatar", imageFile);
+      }
+
+      setIsEditing(false);
+      const result = await editProfile(formData);
+      // console.log(result);
+
+      if (result?.data?.status) {
+        toast.success("Profile updated successfully.");
+      } else {
+        toast.error("An unexpected error occurred.");
+        setGlobalError("An unexpected error occurred.");
+      }
     } catch (error) {
       toast.error("An unexpected error occurred.");
       setGlobalError("An unexpected error occurred.");
@@ -105,12 +143,12 @@ export default function EditProfileForm({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex gap-3 md:flex-row flex-col items-center"
+            className="flex gap-3 md:flex-row flex-col"
           >
             <div className="md:w-1/2 flex flex-col gap-4 w-full relative">
               {/* Image Preview with Camera Icon */}
               <div
-                className="relative cursor-pointer"
+                className="relative cursor-pointer w-[250px] h-[250px]"
                 onClick={handleImageClick}
               >
                 <Image
@@ -118,7 +156,7 @@ export default function EditProfileForm({
                   alt="Profile Preview"
                   width={250}
                   height={250}
-                  className="object-cover rounded-lg bg-gray-400 p-1"
+                  className="object-contain w-full h-full rounded-lg bg-gray-400 p-1"
                 />
                 {/* Camera Icon on Top Left */}
                 <div className="absolute top-2 left-2 p-1 bg-white rounded-full shadow-lg">
@@ -190,6 +228,7 @@ export default function EditProfileForm({
                             placeholder="Enter your email"
                             autoComplete="off"
                             {...field}
+                            disabled
                           />
                           <FormMessage />
                         </div>
@@ -243,23 +282,74 @@ export default function EditProfileForm({
                     </FormItem>
                   )}
                 />
+
+                <h2 className="">Change Password</h2>
+                <Separator className="my-2" />
+                <div className="flex md:flex-row flex-col items-center w-full gap-3">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="w-full md:w-1/2">
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Enter new password"
+                            autoComplete="off"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem className="w-full md:w-1/2">
+                        <FormLabel>Confirm New Password</FormLabel>
+
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Confirm new password"
+                            autoComplete="off"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
               <div className="flex w-full gap-5">
                 <div className="w-1/2">
-                  {form.formState.isSubmitting ? (
-                    <div className="flex items-center gap-1">
-                      <span>Saving</span>
+                  {isEditingProfile ? (
+                    <Button
+                      disabled
+                      className="flex items-center justify-center gap-1 w-full"
+                      type="submit"
+                    >
+                      <span>Updating</span>
                       <Loader className="animate-spin" />
-                    </div>
+                    </Button>
                   ) : (
                     <Button className="w-full" type="submit">
-                      Save
+                      Update
                     </Button>
                   )}
                 </div>
                 <div className="w-1/2">
-                  <Button className="w-full" variant={"outline"} type="submit">
+                  <Button
+                    className="w-full"
+                    variant={"outline"}
+                    onClick={() => setIsEditing(false)}
+                  >
                     Cancel
                   </Button>
                 </div>

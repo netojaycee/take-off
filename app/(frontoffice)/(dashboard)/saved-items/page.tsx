@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { FavoritesState, Product } from "@/types";
 import { removeFromFavorites } from "@/redux/slices/favoriteSlice";
+import NoItemFound from "@/components/local/NoItemFound";
 
 export default function SavedItems() {
   const dispatch = useDispatch();
@@ -25,7 +26,14 @@ export default function SavedItems() {
   };
 
   if (favoriteItems.length < 1) {
-    return <div className="">No products in Wishlist.</div>
+    return (
+      <div className="flex items-center justify-center h-[283px] w-full mt-10">
+        <NoItemFound
+          title1="No products found in wishlist"
+          title2="Add products to your wishlist"
+        />
+      </div>
+    );
   }
   return (
     <div className="py-5 px-5 md:py-[50px] md:px-[70px] border rounded-md ">

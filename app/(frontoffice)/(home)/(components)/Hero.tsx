@@ -53,7 +53,7 @@ export default function Hero() {
                 />
                 {/* Black overlay */}
                 <div className="absolute inset-0 bg-black opacity-45 rounded-[30px]"></div>
-                <div className="absolute top-20 left-[35px] md:left-[70px] rounded-lg flex flex-col gap-3 md:gap-10 justify-start items-start">
+                <div className="absolute top-10 md:top-20 left-[35px] md:left-[70px] rounded-lg flex flex-col gap-3 md:gap-10 justify-start items-start">
                   <h2 className="text-white text-[20px] md:text-[35px] font-bold text-left">
                     50% off on all home <br />
                     appliances

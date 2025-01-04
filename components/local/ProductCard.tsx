@@ -39,7 +39,7 @@ export default function ProductCard({
   const isFavorite = favoriteItems.some((item) => item.id === data?.id);
 
   const handleAddToCart = (data: Product | undefined) => {
-    dispatch(addToCart(data));
+    dispatch(addToCart({data}));
   };
 
   const handleToggleFavorite = (data: Product | undefined) => {

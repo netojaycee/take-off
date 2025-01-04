@@ -7,32 +7,34 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import React from "react";
 import ProductCard from "@/components/local/ProductCard";
-import PaginationComponent from "@/components/local/Pagination";
+import PaginationComponent from "@/components/local/PaginationComponent";
 import { Loader } from "lucide-react";
-import { useGetAllProductQuery } from "@/redux/appData";
+import { useGetUserProductsQuery } from "@/redux/appData";
 import { Product } from "@/types";
+import NoItemFound from "@/components/local/NoItemFound";
 
 export default function MyItems() {
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 15;
+  const [page, setPage] = useState(1);
+  const [limit] = useState(20);
 
-  const { data, isLoading, error } = useGetAllProductQuery(undefined);
+  const { data, isLoading, error } = useGetUserProductsQuery(
+    {
+      page,
+      limit,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
-  const products: Product[] = data && data;
+  const currentProducts: Product[] = data ? data?.result : [];
 
-  const totalPages = Math.ceil(products?.length / itemsPerPage);
-
-  // Get items for the current page
-  const currentProducts =
-    products &&
-    products.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
+  const totalPages = (data && data.pagination.totalPages) || 1;
+  const handleNextPage = () => setPage((prev) => prev + 1);
+  const handlePrevPage = () => setPage((prev) => Math.max(prev - 1, 1));
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setPage(page);
   };
+  const products: Product[] = data && data;
 
   return (
     <div className="py-5 px-5 md:py-[50px] md:px-[70px] border rounded-md ">
@@ -45,7 +47,7 @@ export default function MyItems() {
               {products && products?.length}{" "}
             </p>
           </div>
-          <div className="">
+          {/* <div className="">
             <select className="border rounded px-2 py-1">
               <option value="">Filter</option>
               <option value="popular">Popular</option>
@@ -53,29 +55,44 @@ export default function MyItems() {
               <option value="low-to-high">Price: Lowest to Highest</option>
               <option value="high-to-low">Price: Highest to Lowest</option>
             </select>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {error && (
-            <div className="">{JSON.stringify(error)} NO Products FOUND</div>
+          {/* Handle error state */}
+          {/* {error ? (
+            <NoItemFound title1="" title2="" />
+          ) :  */}
+          {isLoading ? (
+            /* Render loading skeletons while data is being fetched */
+            Array.from({ length: limit }).map((_, index) => (
+              <ProductCard key={index} isLoading={true} profile />
+            ))
+          ) : currentProducts && currentProducts.length > 0 ? (
+            /* Render products if data is available */
+            currentProducts.map((product, index) => (
+              <div key={index}>
+                <ProductCard data={product} profile isLoading={isLoading} />
+              </div>
+            ))
+          ) : (
+            /* Handle empty product state */
+            <div className="flex items-center justify-center h-[283px] w-full">
+              <NoItemFound
+                title1="No products found"
+                title2="Add products to your store"
+              />
+            </div>
           )}
-          {!isLoading && currentProducts
-            ? currentProducts.map((product, index) => (
-                <div key={index}>
-                  <ProductCard data={product} profile isLoading={isLoading} />
-                </div>
-              ))
-            : Array.from({ length: itemsPerPage }).map((_, index) => (
-                <ProductCard key={index} isLoading={true} profile />
-              ))}
         </div>
       </div>
       <PaginationComponent
-        currentPage={currentPage}
-        totalPages={totalPages}
+        handleNextPage={handleNextPage}
+        handlePrevPage={handlePrevPage}
         onPageChange={handlePageChange}
-      />{" "}
+        currentPage={page}
+        totalPages={totalPages}
+      />
     </div>
   );
 }

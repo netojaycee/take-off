@@ -35,7 +35,7 @@ const baseQuery = fetchBaseQuery({
 export const productsApi = createApi({
   reducerPath: "products",
   baseQuery,
-  tagTypes: ["Category", "Product"],
+  tagTypes: ["Category", "Product", "BuyerOrders", "SellerOrders"],
 
   endpoints: (builder) => ({
     register: builder.mutation({
@@ -86,6 +86,12 @@ export const productsApi = createApi({
       },
     }),
 
+    // search: builder.query({
+    //   query: ({ title, page = 1, limit = 10 }) =>
+    //     `/product/search?title=${title}&page=${page}&limit=${limit}`,
+    //   headers: { "Content-Type": "application/json" },
+    // }),
+
     login: builder.mutation({
       query: (credentials) => ({
         url: "/auth/login",
@@ -120,6 +126,22 @@ export const productsApi = createApi({
       },
     }),
 
+    createOrder: builder.mutation({
+      query: (credentials) => ({
+        url: "/order/create",
+        method: "POST",
+        body: credentials,
+        headers: { "Content-Type": "application/json" },
+      }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          //   console.error("Register failed:", err);
+        }
+      },
+    }),
+
     becomeSeller: builder.mutation({
       query: (credentials) => ({
         url: "/seller/become-seller",
@@ -127,7 +149,7 @@ export const productsApi = createApi({
         body: credentials,
         headers: { "Content-Type": "application/json" },
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
           await queryFulfilled;
         } catch (err) {
@@ -152,6 +174,23 @@ export const productsApi = createApi({
         }
       },
       invalidatesTags: ["Category"],
+    }),
+
+    editProfile: builder.mutation({
+      query: (formData) => ({
+        url: "/auth/update-profile",
+        method: "PATCH",
+        body: formData,
+      }),
+
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category add failed:", err);
+        }
+      },
     }),
     getAllCategory: builder.query({
       query: () => "/category/all",
@@ -180,6 +219,20 @@ export const productsApi = createApi({
     getCategoryById: builder.query({
       query: (id) => ({
         url: `/category/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    getUserOrderByRef: builder.query({
+      query: (ref) => ({
+        url: `/order/by-reference/${ref}`,
+        method: "GET",
+      }),
+    }),
+
+    getOrderById: builder.query({
+      query: (orderId) => ({
+        url: `/order/${orderId}`,
         method: "GET",
       }),
     }),
@@ -237,13 +290,91 @@ export const productsApi = createApi({
       },
       invalidatesTags: ["Product"],
     }),
+
+    getUserProducts: builder.query({
+      query: ({ page, limit }) =>
+        `/product/user-products?page=${page}&limit=${limit}`,
+      headers: { "Content-Type": "application/json" },
+    }),
+
     getAllProduct: builder.query({
-      query: () => "/product/all",
+      // query: ({ page, limit, category, min, max, sort }) =>
+      //   `/product/products?page=${page}&limit=${limit}`,
+      query: ({
+        page = 1,
+        limit = 10,
+        categories,
+        minPrice,
+        maxPrice,
+        sort,
+        inStock,
+        outOfStock,
+        searchQuery,
+      }) => {
+        const queryParams = new URLSearchParams();
+        if (page) queryParams.append("page", page.toString());
+        if (limit) queryParams.append("limit", limit.toString());
+        if (searchQuery) queryParams.append("limit", searchQuery.toString());
+        if (categories) {
+          categories.forEach((cat) => {
+            queryParams.append("categories", cat); // Append each category individually
+          });
+        }
+        if (minPrice) queryParams.append("minPrice", minPrice.toString());
+        if (maxPrice) queryParams.append("maxPrice", maxPrice.toString());
+        if (sort) queryParams.append("sort", sort);
+        if (inStock) queryParams.append("inStock", inStock.toString());
+        if (outOfStock) queryParams.append("outOfStock", outOfStock.toString());
+
+        return `/product/products?${queryParams.toString()}`;
+      },
       providesTags: ["Product"],
       headers: { "Content-Type": "application/json" },
     }),
+
+    search: builder.query({
+      // query: ({ page, limit, category, min, max, sort }) =>
+      //   `/product/products?page=${page}&limit=${limit}`,
+      query: ({
+        page = 1,
+        limit = 10,
+        categories,
+        minPrice,
+        maxPrice,
+        sort,
+        inStock,
+        outOfStock,
+        searchQuery,
+      }) => {
+        const queryParams = new URLSearchParams();
+        if (page) queryParams.append("page", page.toString());
+        if (limit) queryParams.append("limit", limit.toString());
+        if (searchQuery)
+          queryParams.append("searchQuery", searchQuery.toString());
+        if (categories) {
+          categories.forEach((cat) => {
+            queryParams.append("categories", cat); // Append each category individually
+          });
+        }
+        if (minPrice) queryParams.append("minPrice", minPrice.toString());
+        if (maxPrice) queryParams.append("maxPrice", maxPrice.toString());
+        if (sort) queryParams.append("sort", sort);
+        if (inStock) queryParams.append("inStock", inStock.toString());
+        if (outOfStock) queryParams.append("outOfStock", outOfStock.toString());
+
+        return `/product/products?${queryParams.toString()}`;
+      },
+      headers: { "Content-Type": "application/json" },
+    }),
+
     getAllProductFeatured: builder.query({
       query: () => "/product/featured",
+      // providesTags: ["Product"],
+      headers: { "Content-Type": "application/json" },
+    }),
+
+    getUserDetails: builder.query({
+      query: () => "/auth/user-details",
       // providesTags: ["Product"],
       headers: { "Content-Type": "application/json" },
     }),
@@ -276,283 +407,59 @@ export const productsApi = createApi({
       query: () => "/google",
       // headers: { "Content-Type": "application/json" },
     }),
-    // getAllProduct: builder.query({
-    //   query: () => "/products",
-    //   providesTags: ["Product"],
-    // }),
-    // getAllCategory: builder.query({
-    //   query: () => "/categories",
-    //   providesTags: ["Category"],
-    // }),
-    // getAllUserOrders: builder.query({
-    //   query: (id) => `/my-orders/${id}`,
-    //   providesTags: ["UserOrders"],
-    // }),
-    // getAllOrders: builder.query({
-    //   query: () => `/orders/`,
-    //   providesTags: ["AdminOrders"],
-    // }),
-    // getAllUsers: builder.query({
-    //   query: () => `/users/`,
-    // }),
 
-    // editCategory: builder.mutation({
-    //   query: ({ slug, credentials }) => ({
-    //     url: `categories/${slug}`,
-    //     method: "PUT",
-    //     body: credentials,
-    //   }),
+    getProductReviews: builder.query({
+      query: ({ productId, page, limit }) =>
+        `/review/list/${productId}?page=${page}&limit=${limit}`,
+      headers: { "Content-Type": "application/json" },
+    }),
 
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       // console.log("registered");
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("category add failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["Category"],
-    // }),
-    // addProduct: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: "/products",
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
+    addRating: builder.mutation({
+      query: (credentials) => ({
+        url: "/review/add-rating",
+        method: "POST",
+        body: credentials,
+      }),
 
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       // console.log("registered");
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("product add failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["Product"],
-    // }),
-    // editProduct: builder.mutation({
-    //   query: ({ slug, credentials }) => ({
-    //     url: `products/${slug}`,
-    //     method: "PATCH",
-    //     body: credentials,
-    //   }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category add failed:", err);
+        }
+      },
+    }),
+    getBuyerOrders: builder.query({
+      query: () => "/order/buyer",
+      providesTags: ["BuyerOrders"],
 
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       // console.log("registered");
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("product edit failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["Product"],
-    // }),
-    // markOrder: builder.mutation({
-    //   query: ({ credentials, id }) => ({
-    //     url: `orders/${id}`,
-    //     method: "PATCH",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("failed to update order status:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["UserOrders", "AdminOrders"],
-    // }),
-    // payment: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: `paystack/pay`,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("failed to pay for service:", err);
-    //     }
-    //   },
-    // }),
-    // getVerifyPayment: builder.query({
-    //   query: (reference) => `paystack/verify/${reference}`,
-    // }),
+      headers: { "Content-Type": "application/json" },
+    }),
 
-    // forgotPass: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: "/forgot-password",
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("Reset Link send  failed:", err);
-    //     }
-    //   },
-    // }),
+    getSellerOrders: builder.query({
+      query: () => "/order/seller",
+      providesTags: ["SellerOrders"],
+      headers: { "Content-Type": "application/json" },
+    }),
 
-    // resetPass: builder.mutation({
-    //   query: ({ credentials, token }) => ({
-    //     url: `/reset-password/${token}`,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("Reset Link send  failed:", err);
-    //     }
-    //   },
-    // }),
-    // editUser: builder.mutation({
-    //   query: ({ credentials, id }) => ({
-    //     url: `/users/${id}`,
-    //     method: "PATCH",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-    //     try {
-    //       const response = await queryFulfilled;
-    //       const token = response.data.token; // Assuming the response data is the JWT
-    //       // console.log(response.data.token)
-    //       // const decodedToken = jwtDecode(token);
+    markOrder: builder.mutation({
+      query: ({ action, id }) => ({
+        url: `/order/mark-order-status/${id}`,
+        method: "PATCH",
+        body: action,
+      }),
 
-    //       // // Extract required fields from the decoded token
-    //       // const { name, email, isAdmin, _id, phoneNumber, address } =
-    //       //   decodedToken;
-
-    //       // Dispatch actions with decoded data
-    //       dispatch(setCredentials({ token }));
-    //       // dispatch(
-    //       //   setUserInfo({
-    //       //     name,
-    //       //     email,
-    //       //     isAdmin,
-    //       //     _id,
-    //       //     address,
-    //       //     phoneNumber,
-    //       //   })
-    //       // );
-    //     } catch (err) {
-    //       // console.error("update failed:", err);
-    //     }
-    //   },
-    // }),
-    // editUserPassword: builder.mutation({
-    //   query: ({ credentials, id }) => ({
-    //     url: `/users/${id}/password`,
-    //     method: "PATCH",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("update password  failed:", err);
-    //     }
-    //   },
-    // }),
-    // contact: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: `/contact`,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("Reset Link send  failed:", err);
-    //     }
-    //   },
-    // }),
-    // login: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: "/login",
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-    //     try {
-    //       const response = await queryFulfilled;
-    //       const token = response.data; // Assuming the response data is the JWT
-
-    //       const decodedToken = jwtDecode(token);
-
-    //       // Extract required fields from the decoded token
-    //       const { name, email, isAdmin, _id, phoneNumber, address } =
-    //         decodedToken;
-
-    //       // Dispatch actions with decoded data
-    //       dispatch(setCredentials({ token }));
-    //       dispatch(
-    //         setUserInfo({
-    //           name,
-    //           email,
-    //           isAdmin,
-    //           _id,
-    //           address,
-    //           phoneNumber,
-    //         })
-    //       );
-
-    //       // console.log("Login successful:");
-    //     } catch (err) {
-    //       // console.error("Login failed:", err);
-    //     }
-    //   },
-    // }),
-
-    // deleteCategory: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: `categories/${credentials}`,
-    //     method: "DELETE",
-    //     // body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("fetch failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["Category"],
-    // }),
-    // deleteOrders: builder.mutation({
-    //   query: (id) => ({
-    //     url: `orders/${id}`,
-    //     method: "DELETE",
-    //     // body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("fetch failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["AdminOrders", "UserOrders"],
-    // }),
-    // deleteProduct: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: `products/${credentials}`,
-    //     method: "DELETE",
-    //     // body: credentials,
-    //   }),
-    //   onQueryStarted: async (arg, { queryFulfilled }) => {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (err) {
-    //       // console.error("fetch failed:", err);
-    //     }
-    //   },
-    //   invalidatesTags: ["Product"],
-    // }),
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          // console.log("registered");
+          await queryFulfilled;
+        } catch (err) {
+          // console.error("category add failed:", err);
+        }
+      },
+      invalidatesTags: ["SellerOrders", "BuyerOrders"],
+    }),
   }),
 });
 
@@ -562,41 +469,31 @@ export const {
   useResendVerifyTokenMutation,
   useLoginMutation,
   useBecomeSellerMutation,
-
+  useEditProfileMutation,
   useAddCategoryMutation,
   useGetAllCategoryQuery,
   useDeleteCategoryMutation,
-  useGetCategoryByIdQuery,
+  useGetProductReviewsQuery,
   useEditCategoryMutation,
 
   useAddProductMutation,
+  useAddRatingMutation,
   useEditProductMutation,
   useGetAllProductQuery,
+  useGetUserProductsQuery,
+  useGetUserOrderByRefQuery,
+  useGetOrderByIdQuery,
   useGetAllProductFeaturedQuery,
   useDeleteProductMutation,
   useGetProductByIdQuery,
+  useGetCategoryByIdQuery,
+  useGetUserDetailsQuery,
+  useCreateOrderMutation,
+  useLazySearchQuery,
 
   useGetGoogleSigninQuery,
 
-  // useLoginMutation,
-  // useContactMutation,
-  // useForgotPassMutation,
-  // useResetPassMutation,
-  // useEditUserMutation,
-  // useEditUserPasswordMutation,
-  // useGetAllProductQuery,
-  // useGetVerifyPaymentQuery,
-  // useGetAllUserOrdersQuery,
-  // useGetAllOrdersQuery,
-  // useGetAllUsersQuery,
-  // useEditCategoryMutation,
-  // useAddProductMutation,
-  // useEditProductMutation,
-
-  // useMarkOrderMutation,
-  // usePaymentMutation,
-
-  // useDeleteCategoryMutation,
-  // useDeleteOrdersMutation,
-  // useDeleteProductMutation,
+  useGetBuyerOrdersQuery,
+  useGetSellerOrdersQuery,
+  useMarkOrderMutation,
 } = productsApi;

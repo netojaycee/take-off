@@ -1,3 +1,4 @@
+"use client"
 import ProductCard from "@/components/local/ProductCard";
 import { Product } from "@/types";
 import { Loader } from "lucide-react";
@@ -12,6 +13,8 @@ export default function NewItemsProducts({
   products: Product[];
   isLoading: boolean;
 }) {
+
+
   return (
     <div className="flex flex-col gap-5 mt-10">
       <div className=" flex items-center justify-between">
@@ -21,7 +24,7 @@ export default function NewItemsProducts({
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductCard key={index} isLoading={true} />

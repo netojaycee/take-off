@@ -8,20 +8,32 @@ import NewItemsBanner from "./(components)/NewItemsBanner";
 import NewItemsProducts from "./(components)/NewItemsProducts";
 import TodaysDeals from "./(components)/TodaysDeals";
 import { useSelector } from "react-redux";
-import { RootState } from "@/types";
+import { Product, RootState } from "@/types";
 import { useGetAllProductQuery } from "@/redux/appData";
 import { Loader } from "lucide-react";
 
 export default function Home() {
   const userData = useSelector((state: RootState) => state.auth.userData);
   const auth = useSelector((state: RootState) => state.auth.isAuthenticated);
-  console.log(userData);
-  console.log(auth);
-  const { data, isLoading } = useGetAllProductQuery(undefined);
-  
-  // const categories = data.category as category[];
-  const products = data;
-  console.log(products);
+  // console.log(userData);
+  // console.log(auth);
+  const { data, isLoading, error } = useGetAllProductQuery({
+    page: 1,
+    limit: 20,
+  });
+
+  const products: Product[] = data ? data?.result : [];
+console.log(products)
+  const {
+    data: dataFeatured,
+    isLoading: isLoadingFeatured,
+    error: errorFeatured,
+  } = useGetAllProductQuery({
+    page: 1,
+    limit: 20,
+  });
+  const featuredProducts: Product[] = dataFeatured ? dataFeatured?.result : [];
+
   return (
     <>
       <Hero />
@@ -30,9 +42,9 @@ export default function Home() {
       <NewItemsBanner />
       <NewItemsProducts isLoading={isLoading} products={products} />
       <TodaysDeals />
-      <FeaturedItems isLoading={isLoading} products={products} />
+      <FeaturedItems isLoading={isLoadingFeatured} products={featuredProducts} />
       <BestSellingElec />
-      <BestSellingItems isLoading={isLoading} products={products} />
+      <BestSellingItems isLoading={isLoadingFeatured} products={featuredProducts} />
     </>
   );
 }

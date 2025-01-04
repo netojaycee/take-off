@@ -18,9 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useGetAllProductQuery } from "@/redux/appData";
 import { CartType, CartItem, Product } from "@/types";
 import {
+  addToCart,
   decreaseCartQuantity,
-  getTotals,
-  increaseCartQuantity,
   removeFromCart,
 } from "@/redux/slices/cartSlice";
 import Link from "next/link";
@@ -35,15 +34,17 @@ export default function Cart() {
   // console.log(cart);
 
   const { data: relatedProducts, isLoading: isLoadingRelated } =
-    useGetAllProductQuery(undefined);
+    useGetAllProductQuery({ page: 1, limit: 10 });
+
+  const handleAddToCart = (data: Product | undefined) => {
+    console.log(data);
+    dispatch(addToCart({ data }));
+  };
 
   const relatedProductData = isLoadingRelated
     ? Array(5).fill({})
-    : relatedProducts?.slice(0, 5);
+    : relatedProducts?.result?.slice(0, 5);
 
-  useEffect(() => {
-    dispatch(getTotals()); // Dispatch getTotals whenever cart items change
-  }, [dispatch]);
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -52,8 +53,10 @@ export default function Cart() {
           <div className="w-full lg:w-3/4 flex flex-col gap-3">
             <div className="w-full flex items-center">
               <p className="w-[65%] font-bold">Item</p>
-              <p className="w-[20%] font-bold">Price</p>
-              <p className="w-[15%] font-bold text-right">Total</p>
+              <p className="w-[20%] font-bold hidden md:block">Price</p>
+              <p className="w-[15%] flex-grow font-bold text-right flex justify-end ">
+                Total
+              </p>
             </div>
 
             {cart.cartItems.map((cartItem: CartItem, index: number) => (
@@ -62,13 +65,13 @@ export default function Cart() {
                 <div className="w-full flex h-[150px]">
                   <div className="w-[65%] ">
                     <div className="flex gap-2 w-full">
-                      <div className="p-2 rounded-md h-[130px] w-[180px] bg-[#F2F2F2] flex items-center justify-center">
+                      <div className="p-2 rounded-md md:h-[130px] w-[160px] bg-[#F2F2F2] flex items-center justify-center">
                         <Image
                           src={cartItem.thumbnail || ""}
                           alt={cartItem.name}
                           width={120}
                           height={120}
-                          className="object-contain object-center w-full h-full"
+                          className="object-contain  w-full h-full"
                         />
                       </div>
 
@@ -76,7 +79,7 @@ export default function Cart() {
                         <h1 className="text-[14px] lg:text-[18px]">
                           {cartItem.name}
                         </h1>
-                        <p className="text-[12px] lg:text-[16px] text-[#25252580] line-clamp-2 w-[80%]">
+                        <p className="text-[12px] lg:text-[14px] text-[#25252580] line-clamp-2 w-[80%]">
                           {cartItem.description}
                         </p>
                         <p className="text-red-500 text-[10px] md:text-[14px]">
@@ -95,9 +98,7 @@ export default function Cart() {
                             {cartItem.cartQuantity}
                           </span>
                           <Button
-                            onClick={() =>
-                              dispatch(increaseCartQuantity(cartItem))
-                            }
+                            onClick={() => handleAddToCart(cartItem)}
                             className="text-black hover:text-white bg-gray-300 font-bold h-[30px]"
                           >
                             +
@@ -106,13 +107,13 @@ export default function Cart() {
                       </div>
                     </div>
                   </div>
-                  <p className="w-[20%] text-[12px] lg:text-[18px]">
+                  <p className="w-[20%] text-[12px] lg:text-[18px] hidden md:block">
                     {new Intl.NumberFormat("en-NG", {
                       style: "currency",
                       currency: "NGN",
                     }).format(cartItem.price)}
                   </p>
-                  <div className="w-[15%] text-[12px] lg:text-[18px] ">
+                  <div className="w-[15%] text-[12px] lg:text-[18px] flex justify-end flex-grow">
                     <div className="h-full w-full flex flex-col items-end">
                       <span className="">
                         {new Intl.NumberFormat("en-NG", {
@@ -154,7 +155,7 @@ export default function Cart() {
                       className="flex justify-between items-center"
                     >
                       <span className="text-[#252525] text-[12px] lg:text-[15px]">
-                        {cartItem.name}
+                        {cartItem.name} x {cartItem.cartQuantity}
                       </span>
                       <span>
                         {new Intl.NumberFormat("en-NG", {

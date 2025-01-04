@@ -12,7 +12,7 @@ export default function BestSellingItems({
   isLoading: boolean;
 }) {
   // Limit products to the first 5 for the carousel
-  const productData = isLoading ? Array(5).fill({}) : products?.slice(0, 5);
+  const productData = isLoading ? Array(5).fill({}) : products?.slice(0, 7);
 
   return (
     <div className="flex flex-col gap-5 mt-10 mb-4">

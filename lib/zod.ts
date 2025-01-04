@@ -63,20 +63,46 @@ export const editProfileSchema = z
     .object({
         name: z
             .string({ required_error: "name is required" })
-            .min(1, "Name is required"),
+            .optional(),
         email: z
             .string({ required_error: "Email is required" })
-            .email("Invalid email address"),
+            .email("Invalid email address")
+            .optional(),
         contact: z
             .string({ required_error: "contact phone is required" })
-            .min(1, "Name is required"),
+
+            .optional(),
         address: z
             .string({ required_error: "address is required" })
-            .min(1, "address is required"),
+            .optional(),
+
         image: z
             .string({ required_error: "image is required" })
-            .min(1, "image is required"),
-    });
+            .optional(),
+
+        password: z
+            .string({ required_error: "Password is required" })
+            .optional(),
+        confirmPassword: z
+            .string({
+                required_error: "Confirm Password is required",
+            })
+            .optional(),
+
+    })
+    .refine(
+        (data) => {
+            // If `password` is provided, `confirm_password` must match
+            if (data.password && data.password !== data.confirmPassword) {
+                return false;
+            }
+            return true;
+        },
+        {
+            message: "Passwords don't match",
+            path: ["confirmPassword"],
+        }
+    );
 
 
 export const editItemSchema = z
@@ -124,6 +150,16 @@ export const createCategorySchema = z.object({
 });
 
 
+export const addRatingSchema = z.object({
+    rating: z
+        .number({ required_error: "Rating is required" })
+        .min(1, "Rating must be between 1 and 5")
+        .max(5, "Rating must be between 1 and 5"),
+    content: z.string({ required_error: "content is required" })
+        .min(1, "content is required"),
+});
+
+
 
 //     how can structure my image to be sent in body as json den
 
@@ -138,3 +174,20 @@ export const createCategorySchema = z.object({
 // throw new unprocessableentitiyexception("image required")}
 
 // }
+
+export const checkoutSchema = z.object({
+    email: z
+        .string({ required_error: "Email is required" })
+        .email("Please enter a valid email address"),
+    name: z
+        .string({ required_error: "Name is required" })
+        .min(2, "Name must be at least 2 characters long")
+        .max(50, "Name cannot exceed 50 characters"),
+    phone: z
+        .string({ required_error: "Phone is required" })
+        .regex(/^[0-9]{10,15}$/, "Phone must be between 10 and 15 digits"),
+    address: z
+        .string({ required_error: "Address is required" })
+        .min(5, "Address must be at least 5 characters long"),
+    note: z.string().optional(),
+});

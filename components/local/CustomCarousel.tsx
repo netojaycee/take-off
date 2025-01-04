@@ -22,7 +22,7 @@ export default function CustomCarousel({
         {items && items.map((item: any, index: number) => (
           <CarouselItem
             key={index}
-            className="pl-1 basis-1/3 lg:basis-1/4"
+            className="pl-1 basis-1/2 lg:basis-1/4"
           >
             <div className="p-1">
               {renderCard(item)}{" "}

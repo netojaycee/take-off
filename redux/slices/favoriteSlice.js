@@ -3,13 +3,13 @@ import toast from "react-hot-toast";
 
 const initialState = {
   favoriteItems:
-    typeof window !== "undefined" && localStorage.getItem("favoriteItems")
-      ? JSON.parse(localStorage.getItem("favoriteItems"))
+    typeof window !== "undefined" && localStorage.getItem("favoriteItemsTake")
+      ? JSON.parse(localStorage.getItem("favoriteItemsTake"))
       : [],
 };
 
 const favoritesSlice = createSlice({
-  name: "favorites",
+  name: "favoritesTake",
   initialState,
   reducers: {
     addToFavorites(state, action) {
@@ -18,7 +18,7 @@ const favoritesSlice = createSlice({
         state.favoriteItems.push(action.payload);
         if (typeof window !== "undefined") {
           localStorage.setItem(
-            "favoriteItems",
+            "favoriteItemsTake",
             JSON.stringify(state.favoriteItems)
           );
         }
@@ -37,7 +37,7 @@ const favoritesSlice = createSlice({
       state.favoriteItems = nextFavoriteItems;
       if (typeof window !== "undefined") {
         localStorage.setItem(
-          "favoriteItems",
+          "favoriteItemsTake",
           JSON.stringify(state.favoriteItems)
         );
       }

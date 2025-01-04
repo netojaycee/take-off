@@ -20,13 +20,27 @@ export default function Categories() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
+      <div className="grid-cols-4 lg:grid-cols-6 gap-2 hidden md:grid">
         {isLoading
           ? Array.from({ length: 12 }).map((_, index) => (
               <CategoryCard  key={index} isLoading={true} />
             ))
           : categories &&
             categories.slice(0, 12).map((category, index) => (
+              <div key={index}>
+                <CategoryCard isLoading={isLoading} data={category} />
+              </div>
+            ))}
+      </div>
+
+
+      <div className="grid grid-cols-4 lg:grid-cols-6 gap-2 md:hidden">
+        {isLoading
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <CategoryCard  key={index} isLoading={true} />
+            ))
+          : categories &&
+            categories.slice(0, 8).map((category, index) => (
               <div key={index}>
                 <CategoryCard isLoading={isLoading} data={category} />
               </div>

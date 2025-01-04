@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@/components/ui/dialog";
 import { toast } from "react-hot-toast"; // Assuming you are using react-hot-toast for notifications
 import { Loader } from "lucide-react"; // Assuming you're using this for the loader
-import { useDeleteCategoryMutation } from "@/redux/appData";
+import {
+  useDeleteCategoryMutation,
+  useDeleteProductMutation,
+} from "@/redux/appData";
 
 export default function DeleteForm({
   data,
@@ -23,6 +26,15 @@ export default function DeleteForm({
       isSuccess: deleteCategorySuccess,
     },
   ] = useDeleteCategoryMutation();
+
+  const [
+    deleteProduct,
+    {
+      isLoading: deleteProductLoading,
+      error: deleteProductError,
+      isSuccess: deleteProductSuccess,
+    },
+  ] = useDeleteProductMutation();
   // Handle delete
   const handleDelete = async () => {
     try {
@@ -37,7 +49,7 @@ export default function DeleteForm({
       }
       if (title === "product") {
         console.log("product");
-        // result = await deleteCategory(data.id, data.restaurantId); // Delete category
+        result = await deleteProduct(data.id); // Delete category
       }
 
       // If the deletion was successful, show a success toast and close the dialog
