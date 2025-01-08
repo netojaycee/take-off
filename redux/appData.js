@@ -461,6 +461,11 @@ export const productsApi = createApi({
       },
       invalidatesTags: ["SellerOrders", "BuyerOrders"],
     }),
+    getAllChats: builder.query({
+      query: () => "/chat/all-chats",
+      // providesTags: ["Product"],
+      headers: { "Content-Type": "application/json" },
+    }),
   }),
 });
 
@@ -497,4 +502,5 @@ export const {
   useGetBuyerOrdersQuery,
   useGetSellerOrdersQuery,
   useMarkOrderMutation,
+  useGetAllChatsQuery,
 } = productsApi;

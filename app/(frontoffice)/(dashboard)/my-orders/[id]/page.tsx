@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import * as React from "react";
 import Chat from "@/components/local/Chat";
-import { Loader } from "lucide-react";
+import { Loader, MessageCircle } from "lucide-react";
 import { useGetOrderByIdQuery, useMarkOrderMutation } from "@/redux/appData";
 import TrackingStepComponent from "@/components/local/TrackingStep";
 
@@ -17,8 +17,9 @@ export default function OrderDetailsBuyer({
 }) {
   const orderId = params.id;
 
-  
   const { data: order, isLoading } = useGetOrderByIdQuery(orderId);
+  const [open, setOpen] = React.useState<boolean>(false);
+
   const [markOrder, { isLoading: isMarking }] = useMarkOrderMutation();
 
   if (isLoading) {
@@ -35,11 +36,9 @@ export default function OrderDetailsBuyer({
         <p>No orders found for this Id.</p>
       </div>
     );
-
-
   }
 
-  console.log(order)
+  console.log(order);
 
   const handleOrderStatus = async (action: string) => {
     try {
@@ -95,8 +94,7 @@ export default function OrderDetailsBuyer({
               }).format(order?.totalPrice)}
             </p>
             <p>
-              <strong>Date of Order:</strong>{" "}
-              {formatDateTime(order?.createdAt)}
+              <strong>Date of Order:</strong> {formatDateTime(order?.createdAt)}
             </p>
           </div>
           <div>
@@ -113,7 +111,18 @@ export default function OrderDetailsBuyer({
 
         {/* Chat and Actions */}
         <div className="flex justify-between items-center">
-          <Chat reciepient="seller" receiverId={order?.seller?.id} />
+          <Button
+            onClick={() => setOpen(true)}
+            variant={"outline"}
+            className="relative bg-gray-600 text-white p-3 rounded-full"
+          >
+            <MessageCircle className="mr-1" /> Chat with Seller
+          </Button>
+          <Chat
+            open={open}
+            onOpenChange={(open) => setOpen(open)}
+            receiverId={order?.seller?.id}
+          />
           {order?.deliveryStatus === "delivered" && (
             <Button
               onClick={() => handleOrderStatus("receive")}

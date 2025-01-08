@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import * as React from "react";
 import Chat from "@/components/local/Chat";
-import { Loader } from "lucide-react";
+import { Loader, MessageCircle } from "lucide-react";
 import { useGetOrderByIdQuery, useMarkOrderMutation } from "@/redux/appData";
 import TrackingStepComponent from "@/components/local/TrackingStep";
 import { formatDateTime } from "@/hooks/format-date";
@@ -14,6 +14,7 @@ export default function OrderDetailsSeller({
   params: { id: string };
 }) {
   const orderId = params.id;
+  const [open, setOpen] = React.useState<boolean>(false);
 
   const { data: order, isLoading } = useGetOrderByIdQuery(orderId);
   const [markOrder, { isLoading: isMarking }] = useMarkOrderMutation();
@@ -112,7 +113,18 @@ export default function OrderDetailsSeller({
 
         {/* Chat and Actions */}
         <div className="flex justify-between items-center">
-          <Chat reciepient="buyer" receiverId={order?.buyer?.id} />
+          <Button
+            onClick={() => setOpen(true)}
+            variant={"outline"}
+            className="relative bg-gray-600 text-white p-3 rounded-full"
+          >
+            <MessageCircle className="mr-1" /> Chat with Buyer
+          </Button>
+          <Chat
+            open={open}
+            onOpenChange={(open) => setOpen(open)}
+            receiverId={order?.buyer?.id}
+          />
           {order?.status === "pending" && order?.paymentStatus === "paid" && (
             <div className="flex gap-4">
               <Button

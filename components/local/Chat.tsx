@@ -5,6 +5,7 @@ import {
   SheetContent,
   SheetFooter,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { ArrowRight, MessageCircle } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { RootState } from "@/types";
+import Image from "next/image";
 // import data from "@emoji-mart/data";
 // import Picker from "@emoji-mart/react";
 // import { Minus, Plus } from "lucide-react";
@@ -31,16 +33,20 @@ interface Chat {
   receiver: string | undefined;
   message: string;
   timestamp: string;
+  senderName?: string;
+  senderAvatar?: string;
 }
 
 export default function Chat({
   receiverId,
-  reciepient,
+  open,
+  onOpenChange,
 }: {
   receiverId: string;
-  reciepient: "seller" | "buyer" | "admin";
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Chat[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -50,13 +56,13 @@ export default function Chat({
 
   useEffect(() => {
     // if (open) {
-    //   const socketInstance = io("http://localhost:3003", {
-    //     transports: ["websocket"],
-    //   });
-    if (open) {
-      const socketInstance = io("https://take-off-r3fp.onrender.com/", {
-        transports: ["websocket"],
-      });
+      // const socketInstance = io("http://localhost:3001", {
+      //   transports: ["websocket"],
+      // });
+      if (open) {
+        const socketInstance = io("https://take-off-r3fp.onrender.com/", {
+          transports: ["websocket"],
+        });
       socketInstance.on("connect", () =>
         console.log("Connected to WebSocket server")
       );
@@ -141,21 +147,17 @@ export default function Chat({
   }, [messages]);
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button
-          variant={"outline"}
-          className="relative bg-gray-600 text-white p-3 rounded-full"
-        >
-          <MessageCircle className="mr-1" /> Chat with {reciepient}
-        </Button>
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      {/* <SheetTrigger asChild>
+       
+      </SheetTrigger> */}
       <SheetContent>
-        <SheetHeader>
+        <SheetTitle>
           <header className="bg-blue-600 text-white p-2 flex justify-between items-center">
             <h2 className="text-lg font-semibold">Chat</h2>
           </header>
-        </SheetHeader>
+        </SheetTitle>
+
         <div
           ref={chatContainerRef}
           className="flex-grow overflow-y-auto p-4 h-[75vh] space-y-2 no-scrollbar"
@@ -167,22 +169,67 @@ export default function Chat({
                 msg.sender === userData?.id ? "justify-end" : "justify-start"
               }`}
             >
-              <div
-                className={`p-3 rounded-lg shadow-md max-w-[80%] ${
-                  msg.sender === userData?.id
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-black"
-                }`}
-              >
-                <p className="text-sm">{msg.message}</p>
-                <div className="flex justify-between items-center mt-1 text-xs opacity-80">
-                  <span>
-                    {new Date(msg.timestamp).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+              {/* Profile Image and Chat Box */}
+              <div className="flex items-start space-x-2">
+                {/* Image on the Right for the sender */}
+                {msg.sender !== userData?.id && (
+                  <div className="w-10 h-10">
+                    <Image
+                      // src={msg?.senderAvatar} // Sender's avatar
+                      src={"/images/profile.png"} // Current user's avatar
+                      alt="Sender's Avatar"
+                      className="w-full h-full rounded-full object-cover"
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                )}
+
+                {/* Chat Box */}
+                <div
+                  className={`relative p-2 rounded-lg shadow-md max-w-[80%] ${
+                    msg.sender === userData?.id
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-black"
+                  } flex flex-col`} // Set up the flex column layout
+                >
+                  <div className="flex justify-between items-start">
+                    {/* Sender's Name */}
+                    <h4 className="text-xs font-semibold">
+                      {msg.sender === userData?.id
+                        ? "You"
+                        : msg?.senderName || "User"}
+                    </h4>
+                  </div>
+                  <p className="text-sm mt-1 min-w-20">{msg.message}</p>
+
+                  {/* Time and other details */}
+                  <div
+                    className={`text-[10px] opacity-70 self-end`}
+                    // Conditional class to position the time at bottom-right or left
+                  >
+                    <span>
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
                 </div>
+
+                {/* Image on the Right for the current user */}
+                {msg.sender === userData?.id && (
+                  <div className="w-10 h-10">
+                    <Image
+                      // src={userData?.avatar || "/images/profile.png"} // Current user's avatar
+                      src={"/images/profile.png"} // Current user's avatar
+                      alt="Your Avatar"
+                      className="w-full h-full rounded-full object-cover"
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           ))}

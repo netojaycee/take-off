@@ -1,7 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Facebook, Heart, Instagram, Linkedin } from "lucide-react";
+import {
+  Facebook,
+  Heart,
+  Instagram,
+  Linkedin,
+  MessageCircle,
+} from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -16,7 +22,13 @@ import {
   useGetProductReviewsQuery,
 } from "@/redux/appData";
 import { AddReview } from "@/components/local/AddReview";
-import { FavoritesState, Product, ProductImage, Reviews } from "@/types";
+import {
+  FavoritesState,
+  Product,
+  ProductImage,
+  Reviews,
+  RootState,
+} from "@/types";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Chat from "@/components/local/Chat";
@@ -29,6 +41,9 @@ import {
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const ProductDetails = ({ params }: { params: { id: string } }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const auth = useSelector((state: RootState) => state.auth.isAuthenticated);
+
   const dispatch = useDispatch();
   const productId = params.id;
   const { data: productData, isLoading } = useGetProductByIdQuery(productId);
@@ -182,8 +197,20 @@ const ProductDetails = ({ params }: { params: { id: string } }) => {
             </p>
           )}
           <div className="">
-            {" "}
-            <Chat reciepient="seller" receiverId={data?.seller} />
+            {auth && (
+              <Button
+                onClick={() => setOpen(true)}
+                variant={"outline"}
+                className="relative bg-gray-600 text-white p-3 rounded-full"
+              >
+                <MessageCircle className="mr-1" /> Chat with Seller
+              </Button>
+            )}
+            <Chat
+              receiverId={data?.seller}
+              open={open}
+              onOpenChange={(open) => setOpen(open)}
+            />
           </div>
 
           <Separator className="my-2" />
