@@ -2,24 +2,21 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import * as React from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import Chat from "@/components/local/Chat";
 import { Loader } from "lucide-react";
 import { useGetOrderByIdQuery, useMarkOrderMutation } from "@/redux/appData";
-import { TrackingStep } from "@/components/local/TrackingStep";
+import TrackingStepComponent from "@/components/local/TrackingStep";
+import { formatDateTime } from "@/hooks/format-date";
 
-export default function OrderDetailsSeller({ params }: { params: { id: string } }) {
+export default function OrderDetailsSeller({
+  params,
+}: {
+  params: { id: string };
+}) {
   const orderId = params.id;
 
   const { data: order, isLoading } = useGetOrderByIdQuery(orderId);
   const [markOrder, { isLoading: isMarking }] = useMarkOrderMutation();
-
 
   if (isLoading) {
     return (
@@ -37,6 +34,7 @@ export default function OrderDetailsSeller({ params }: { params: { id: string } 
     );
   }
 
+  console.log(order);
 
   const handleOrderStatus = async (action: string) => {
     try {
@@ -91,11 +89,7 @@ export default function OrderDetailsSeller({ params }: { params: { id: string } 
               }).format(order?.totalPrice)}
             </p>
             <p>
-              <strong>Date of Order:</strong>{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                dateStyle: "medium",
-                timeStyle: "short",
-              }).format(new Date(order?.paidAt))}
+              <strong>Date of Order:</strong> {formatDateTime(order?.createdAt)}
             </p>
           </div>
           <div>
@@ -118,20 +112,23 @@ export default function OrderDetailsSeller({ params }: { params: { id: string } 
 
         {/* Chat and Actions */}
         <div className="flex justify-between items-center">
-          <Chat reciever="buyer" />
-          {order?.status === "pending" && (
+          <Chat reciepient="buyer" receiverId={order?.buyer?.id} />
+          {order?.status === "pending" && order?.paymentStatus === "paid" && (
             <div className="flex gap-4">
               <Button
                 onClick={() => handleOrderStatus("accept")}
                 className="bg-green-600"
+                disabled={isMarking}
               >
-                Accept Order
+                Accept Order {isMarking && <Loader className="animate-spin" />}
               </Button>
               <Button
                 onClick={() => handleOrderStatus("reject")}
                 variant="destructive"
+                disabled={isMarking}
               >
                 Reject Order
+                {isMarking && <Loader className="animate-spin" />}
               </Button>
             </div>
           )}
@@ -139,20 +136,24 @@ export default function OrderDetailsSeller({ params }: { params: { id: string } 
           {order?.status === "confirmed" &&
             order?.deliveryStatus === "pending" && (
               <Button
-                onClick={() => handleOrderStatus("shipped")}
+                onClick={() => handleOrderStatus("ship")}
                 className="bg-green-600"
+                disabled={isMarking}
               >
                 Mark as Shipped
+                {isMarking && <Loader className="animate-spin" />}{" "}
               </Button>
             )}
 
           {order?.status === "confirmed" &&
             order?.deliveryStatus === "shipped" && (
               <Button
-                onClick={() => handleOrderStatus("delivered")}
+                onClick={() => handleOrderStatus("deliver")}
                 className="bg-green-600"
+                disabled={isMarking}
               >
                 Mark as Delivered
+                {isMarking && <Loader className="animate-spin" />}
               </Button>
             )}
         </div>
@@ -160,38 +161,8 @@ export default function OrderDetailsSeller({ params }: { params: { id: string } 
         <Separator className="my-4" />
 
         {/* Tracking History Section */}
-        <div className="border p-4 rounded-lg">
-          <h2 className="text-lg font-semibold">Order Process</h2>
-          <div className="mt-2 space-y-4">
-            <TrackingStep
-              date="10th Sep 2024"
-              status="Order Placed"
-              delivered={order?.deliveryStatus === "N/A" ? true : false}
-            />
-            <TrackingStep
-              date="10th Sep 2024"
-              status="Order Accepted"
-              delivered={order?.deliveryStatus === "pending" ? true : false}
-            />
-            <TrackingStep
-              date="10th Sep 2024"
-              status="Shipped"
-              delivered={order?.deliveryStatus === "shipped" ? true : false}
-            />
-            <TrackingStep
-              date="11th Sep 2024"
-              status="Delivered"
-              delivered={order?.deliveryStatus === "delivered" ? true : false}
-            />
-            <TrackingStep
-              date="11th Sep 2024"
-              status="Accepted by Buyer"
-              delivered={order?.deliveryStatus === "recieved" ? true : false}
-            />
-          </div>
-        </div>
+        <TrackingStepComponent order={order} />
       </div>
     </div>
   );
 }
-

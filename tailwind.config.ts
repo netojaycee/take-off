@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss"
+import { PluginAPI } from "tailwindcss/types/config";
 
 const config = {
   darkMode: ["class"],
@@ -7,7 +8,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -74,7 +75,37 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),
+  function ({ addUtilities, theme }: PluginAPI) {
+    const newUtilities = {
+      '.no-scrollbar::-webkit-scrollbar': {
+        display: 'none',
+      },
+      '.no-scrollbar': {
+        '-ms-overflow-style': 'none',
+        'scrollbar-width': 'none',
+      },
+      '.scrollbar-thin': {
+        scrollbarWidth: 'thin',
+        scrollbarColor: 'rgb(31 29 29) white',
+      },
+      '.scrollbar-webkit': {
+        '&::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: 'white',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: 'rgb(31 41 55)',
+        },
+      },
+    };
+
+    // addUtilities(newUtilities, ['responsive', 'hover', 'focus']);
+    addUtilities(newUtilities);
+  },
+  ],
 } satisfies Config
 
 export default config

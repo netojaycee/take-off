@@ -78,7 +78,7 @@ export const columns: ColumnDef<SellerOrder>[] = [
   //   },
   // },
   {
-    accessorKey: "paidAt",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return (
         <Button
@@ -91,11 +91,23 @@ export const columns: ColumnDef<SellerOrder>[] = [
       );
     },
     cell: ({ row }) => {
-      // const date = new Intl.DateTimeFormat("en-US", {
-      //   dateStyle: "medium",
-      //   timeStyle: "short",
-      // }).format(new Date(row.getValue("paidAt")));
-      return <div className="font-medium">{row.getValue("paidAt")}</div>;
+      const createdAt = row.getValue("createdAt");
+      let date = "N/A"; // Default to "N/A" for invalid or null values
+
+      if (
+        typeof createdAt === "string" ||
+        typeof createdAt === "number" ||
+        createdAt instanceof Date
+      ) {
+        const parsedDate = new Date(createdAt); // Attempt to parse the date
+        if (!isNaN(parsedDate.getTime())) {
+          date = new Intl.DateTimeFormat("en-US", {
+            dateStyle: "medium",
+            timeStyle: "short",
+          }).format(parsedDate);
+        }
+      }
+      return <div className="font-medium">{date}</div>;
     },
   },
 
@@ -141,7 +153,10 @@ export const columns: ColumnDef<SellerOrder>[] = [
       const product = row.original;
 
       return (
-        <Link href={`/seller/my-items/${product.id}`} className="flex items-center gap-4">
+        <Link
+          href={`/seller/my-items/${product.id}`}
+          className="flex items-center gap-4"
+        >
           <EyeIcon className="w-5 h-5 cursor-pointer" />
         </Link>
       );

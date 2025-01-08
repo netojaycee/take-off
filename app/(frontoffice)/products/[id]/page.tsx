@@ -63,7 +63,7 @@ const ProductDetails = ({ params }: { params: { id: string } }) => {
 
   const relatedProductData = isLoadingRelated
     ? Array(5).fill({})
-    : relatedProducts?.slice(0, 5);
+    : relatedProducts?.data?.slice(0, 5);
 
   useEffect(() => {
     if (data) {
@@ -88,6 +88,7 @@ const ProductDetails = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  // console.log("dd",data)
   return (
     <>
       <div className="flex flex-col md:flex-row gap-4 md:gap-10 w-full">
@@ -182,7 +183,7 @@ const ProductDetails = ({ params }: { params: { id: string } }) => {
           )}
           <div className="">
             {" "}
-            <Chat reciever="seller" />
+            <Chat reciepient="seller" receiverId={data?.seller} />
           </div>
 
           <Separator className="my-2" />

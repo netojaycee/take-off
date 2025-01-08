@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { clearCredentials, setCredentials } from "./slices/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  // baseUrl: "http://localhost:5000/api/",
+  // baseUrl: "http://localhost:3001/",
   baseUrl: "https://take-off-r3fp.onrender.com/",
   prepareHeaders: (headers) => {
     const token = Cookies.get("token");
@@ -140,6 +140,7 @@ export const productsApi = createApi({
           //   console.error("Register failed:", err);
         }
       },
+      invalidatesTags: ["BuyerOrders", "SellerOrders"],
     }),
 
     becomeSeller: builder.mutation({

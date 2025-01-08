@@ -140,6 +140,12 @@ export interface Order {
   status: string;
   deliveryStatus: string;
   paidAt: string;
+  createdAt: string;
+  acceptedDate: string;
+  shippedDate: string;
+  deliveredDate: string;
+  cancelledDate: string;
+  receivedDate: string;
   cartItems: CartItem[];
 
 }
@@ -162,13 +168,23 @@ export interface SellerOrder {
   address: string;
   phone: string;
   note: string;
-  paidAt: Date; // You can use Date if you're handling it as a Date object
+  paidAt: string;
+  acceptedDate: string;
+  shippedDate: string;
+  deliveredDate: string;
+  cancelledDate: string;
+  receivedDate: string;
 }
 
 
 export interface MergedData {
   paymentReference: string;
   paidAt: string;
+  acceptedDate: string;
+  shippedDate: string;
+  deliveredDate: string;
+  cancelledDate: string;
+  receivedDate: string;
   totalPrice: number;
   quantity: number;
   cartItems: { name: string; price: number; quantity: number }[];
@@ -177,12 +193,18 @@ export interface MergedData {
   phone: string;
   name: string;
   email: string;
+  createdAt: string;
 }
 
 
 export interface Acc {
   paymentReference: string;
   paidAt: string;
+  acceptedDate: string;
+  shippedDate: string;
+  deliveredDate: string;
+  cancelledDate: string;
+  receivedDate: string;
   totalPrice: number;
   quantity: number;
   cartItems: { name: string; price: number; quantity: number }[];

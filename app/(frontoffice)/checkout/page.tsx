@@ -122,7 +122,8 @@ export default function Checkout() {
         email: userDetailData?.email,
         amount: cart.cartTotalAmount * 100,
         metadata: {
-          name: userDetailData?.name || "",
+          // name: userDetailData?.name || "",
+          name: values.name || "",
           address: values.address || "",
           phone: values.phone || "",
           note: values.note,
@@ -201,7 +202,7 @@ export default function Checkout() {
                           placeholder="Enter your full name"
                           autoComplete="off"
                           {...field}
-                          disabled
+                          // disabled
                         />
                       </FormControl>
                       <FormMessage />

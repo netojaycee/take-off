@@ -7,6 +7,7 @@ import { Loader } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Order } from "@/types";
+import { formatDateTime } from "@/hooks/format-date";
 
 
 export default function OrderDetails() {
@@ -36,10 +37,7 @@ export default function OrderDetails() {
                 <div className="hidden md:flex flex-col justify-between items-start">
                   <p className="font-bold font-sans text-sm">Date</p>
                   <p className="text-xs">
-                    {new Intl.DateTimeFormat("en-US", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    }).format(new Date(order?.paidAt))}
+                    {formatDateTime(order?.createdAt)}
                   </p>
                 </div>
 
