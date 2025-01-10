@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/types";
-import { Button } from "@/components/ui/button";
 import Chat from "@/components/local/Chat";
 import { useGetAllChatsQuery } from "@/redux/appData";
 import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 interface ChatPreview {
   room: string;
@@ -24,12 +24,14 @@ export default function ChatList() {
   const { data, isLoading, error } = useGetAllChatsQuery(undefined);
   console.log("cgats", data && data);
 
+  
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <h1 className="text-2xl font-semibold mb-4 text-center">My Chats</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {isLoading ? (
-          <div>Loading...</div>
+          <div><Loader2 className="animate-spin" /></div>
         ) : data && data.length > 0 ? (
           data.map((chat: ChatPreview) => (
             <div

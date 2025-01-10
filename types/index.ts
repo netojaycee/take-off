@@ -196,6 +196,18 @@ export interface MergedData {
   createdAt: string;
 }
 
+export interface DashboardStats {
+  totalProductBySeller: number;
+  totalOrderReceived: number;
+  totalOrderConfirmed: number;
+  totalOrderPlaced: number;
+  totalOrderReceivedBySeller: number;
+  totalOrderPendingBySeller: number;
+  totalSalesByAdmin: number;
+  totalSpentByBuyer: number;
+}
+
+
 
 export interface Acc {
   paymentReference: string;

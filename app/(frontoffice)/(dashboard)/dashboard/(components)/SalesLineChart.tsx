@@ -75,20 +75,7 @@ export function SalesLineChart() {
             </div>
           </div>
 
-          <Select>
-            <SelectTrigger className="w-[100px] md:w-[180px]">
-              <SelectValue placeholder="Filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {/* <SelectLabel>Filter</SelectLabel> */}
-                <SelectItem value="day">Day</SelectItem>
-                <SelectItem value="week">Week</SelectItem>
-                <SelectItem value="month">Month</SelectItem>
-                <SelectItem value="year">Year</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          
         </div>
       </CardHeader>
       <CardContent>
@@ -128,14 +115,7 @@ export function SalesLineChart() {
           </LineChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
+     
     </Card>
   );
 }

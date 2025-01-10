@@ -19,11 +19,13 @@ import { useGetAllCategoryQuery } from "@/redux/appData";
 import { category, UserData } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaAngleRight } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/types";
 import { MobileSearch } from "./MobileSearch";
 import { Separator } from "@/components/ui/separator";
 import SearchBar from "./SearchBar";
+import { useRouter } from "next/navigation";
+import { clearCredentials } from "@/redux/slices/authSlice";
 
 export default function Header({ auth }: { auth?: boolean }) {
   const {
@@ -34,6 +36,8 @@ export default function Header({ auth }: { auth?: boolean }) {
   const categories = data?.category as category[];
   const session = useSelector((state: RootState) => state.auth.isAuthenticated);
   const userData = useSelector((state: RootState) => state.auth.userData);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
@@ -41,7 +45,11 @@ export default function Header({ auth }: { auth?: boolean }) {
       Cookies.remove("token");
 
       // Step 2: Clear Redux Persist Storage
+      dispatch(clearCredentials());
       await persistor.purge();
+
+      // Redirect the user to the login page (or any other page)
+      router.push("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -98,8 +106,11 @@ export default function Header({ auth }: { auth?: boolean }) {
                 <p className="hidden md:block">Cart</p>
                 <BiSolidCart className="w-5 h-5" />
               </Link>
-              <Link href={`${session ? "/dashboard" : "/signin"}`}>
-                <FaUserCircle className="w-6 h-6" />
+              <Link
+                className="md:block hidden"
+                href={`${session ? "/dashboard" : "/signin"}`}
+              >
+                <FaUserCircle className="w-6 h-6 " />
               </Link>
             </div>
           </div>
@@ -120,7 +131,7 @@ function MobileSidebar({
   session: boolean;
   userData: UserData | null;
   categories?: category[];
-  handleLogout?: () => void;
+  handleLogout: () => void;
 }) {
   return (
     <Sheet>
@@ -285,7 +296,7 @@ function MobileSidebar({
               <SheetClose asChild>
                 {session ? (
                   <span
-                    onClick={handleLogout}
+                    onClick={() => handleLogout()}
                     className="block font-medium text-red-600 cursor-pointer"
                   >
                     Log out

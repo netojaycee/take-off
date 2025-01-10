@@ -4,8 +4,8 @@ import Cookies from "js-cookie";
 import { clearCredentials, setCredentials } from "./slices/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  // baseUrl: "http://localhost:3001/",
-  baseUrl: "https://take-off-r3fp.onrender.com/",
+  baseUrl: "http://localhost:3001/",
+  // baseUrl: "https://take-off-r3fp.onrender.com/",
   prepareHeaders: (headers) => {
     const token = Cookies.get("token");
     if (token) {
@@ -466,6 +466,33 @@ export const productsApi = createApi({
       // providesTags: ["Product"],
       headers: { "Content-Type": "application/json" },
     }),
+    getAnalytics: builder.query({
+      query: () => "/order/analytics",
+
+      headers: { "Content-Type": "application/json" },
+    }),
+    getMonthlySummary: builder.query({
+      query: () => "/order/monthly-summary",
+
+      headers: { "Content-Type": "application/json" },
+    }),
+
+    getSalesByCat: builder.query({
+      query: () => "/order/sales-by-category",
+
+      headers: { "Content-Type": "application/json" },
+    }),
+
+    getEarningsVsPayouts: builder.query({
+      query: () => "/order/earnings-vs-payouts",
+
+      headers: { "Content-Type": "application/json" },
+    }),
+    getWalletBalance: builder.query({
+      query: () => "/wallet/user-wallet",
+
+      headers: { "Content-Type": "application/json" },
+    }),
   }),
 });
 
@@ -503,4 +530,10 @@ export const {
   useGetSellerOrdersQuery,
   useMarkOrderMutation,
   useGetAllChatsQuery,
+
+  useGetAnalyticsQuery,
+  useGetMonthlySummaryQuery,
+  useGetSalesByCatQuery,
+  useGetEarningsVsPayoutsQuery,
+  useGetWalletBalanceQuery,
 } = productsApi;

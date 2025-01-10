@@ -55,14 +55,14 @@ export default function Chat({
   const userData = useSelector((state: RootState) => state.auth.userData);
 
   useEffect(() => {
-    // if (open) {
-      // const socketInstance = io("http://localhost:3001", {
-      //   transports: ["websocket"],
-      // });
-      if (open) {
-        const socketInstance = io("https://take-off-r3fp.onrender.com/", {
-          transports: ["websocket"],
-        });
+    if (open) {
+      const socketInstance = io("http://localhost:3001", {
+        transports: ["websocket"],
+      });
+      // if (open) {
+      //   const socketInstance = io("https://take-off-r3fp.onrender.com/", {
+      //     transports: ["websocket"],
+      //   });
       socketInstance.on("connect", () =>
         console.log("Connected to WebSocket server")
       );

@@ -5,6 +5,8 @@ import { UserData } from './types';
 
 const protectedPaths = [
     /\/my-orders\/(.*)/,
+
+    /\/my-orders/,
     /\/checkout/,
     /\/dashboard/,
     /\/saved-items/,
@@ -74,6 +76,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         '/my-orders/:path*',
+        '/my-orders',
         '/checkout',
         '/dashboard',
         '/saved-items',

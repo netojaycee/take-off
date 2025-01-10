@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { usePathname, useRouter } from "next/navigation";
 import { clearCredentials } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
+import { persistor } from "@/redux/store";
 
 export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
   const userData = useSelector((state: RootState) => state.auth.userData);
@@ -16,12 +17,13 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
 
   // Function to check if the current path is active
   const isActive = (path: string) => (pathname === path ? "bg-gray-300" : "");
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Remove token from cookies
     Cookies.remove("token");
 
     // Dispatch logout to clear Redux state
     dispatch(clearCredentials());
+    await persistor.purge();
 
     // Redirect the user to the login page (or any other page)
     router.push("/signin");
@@ -66,6 +68,16 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
         >
           <Link href="/saved-items" onClick={sheetClose}>
             Saved Items
+          </Link>
+        </li>
+
+        <li
+          className={`hover:bg-gray-100 py-3 px-10 rounded-md font-[500] ${isActive(
+            "/chat-list"
+          )}`}
+        >
+          <Link href="/chat-list" onClick={sheetClose}>
+            Messages
           </Link>
         </li>
 
@@ -183,11 +195,11 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
 
       {/* Common Logout and Delete Account */}
       <ul className="space-y-3 lg:space-y-6">
-        <li className="font-[500] hover:bg-gray-100 py-3 px-10 rounded-md">
+        {/* <li className="font-[500] hover:bg-gray-100 py-3 px-10 rounded-md">
           Delete Account
-        </li>
+        </li> */}
         <li
-          onClick={handleLogout}
+          onClick={() => handleLogout()}
           className="font-[500] hover:bg-gray-100 py-3 px-10 rounded-md text-red-500 cursor-pointer"
         >
           Log out
