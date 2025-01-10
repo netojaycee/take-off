@@ -174,6 +174,7 @@ export interface SellerOrder {
   deliveredDate: string;
   cancelledDate: string;
   receivedDate: string;
+  
 }
 
 
@@ -205,6 +206,9 @@ export interface DashboardStats {
   totalOrderPendingBySeller: number;
   totalSalesByAdmin: number;
   totalSpentByBuyer: number;
+  totalBuyers: number;
+  totalSellers: number;
+  pendingDeliveryByBuyer: number;
 }
 
 

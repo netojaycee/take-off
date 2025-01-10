@@ -6,7 +6,7 @@ import { DataTable } from "@/components/local/profile/data-table";
 import { Loader } from "lucide-react";
 import { useGetSellerOrdersQuery } from "@/redux/appData";
 
-export default function Orders() {
+export default function SellerOrders() {
   const { data, isLoading, error } = useGetSellerOrdersQuery(undefined);
 
   if (isLoading) {
@@ -14,7 +14,13 @@ export default function Orders() {
   }
 
   const orders: SellerOrder[] =
-    data && data.filter((order: SellerOrder) => order?.paymentStatus === "paid");
+    data &&
+    data
+      .filter((order: SellerOrder) => order?.paymentStatus === "paid")
+      .sort(
+        (a: SellerOrder, b: SellerOrder) =>
+          new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime()
+      );
   console.log(orders);
   return (
     <div className="2xl:max-w-[1536px] mx-auto py-10">

@@ -36,7 +36,10 @@ export default function Admin({ data }: { data: DashboardStats }) {
             Total Payouts
           </p>
           <p className="text-lg md:text-2xl font-semibold text-black">
-            $90,000.00
+          {new Intl.NumberFormat("en-NG", {
+              style: "currency",
+              currency: "NGN",
+            }).format(data?.totalSalesByAdmin - (data?.totalSalesByAdmin * 0.2))}
           </p>
         </div>
         {/* <div className="flex items-center justify-center bg-[#F3F4F6] p-2 rounded-full">
@@ -54,7 +57,7 @@ export default function Admin({ data }: { data: DashboardStats }) {
             Active Users
           </p>
           <p className="text-lg md:text-2xl font-semibold text-black">
-            Sellers: 200 | Buyers: 1,500
+            Sellers: {data.totalBuyers} | Buyers: {data.totalSellers}
           </p>
         </div>
         {/* <div className="flex items-center justify-center bg-[#F3F4F6] p-2 rounded-full">

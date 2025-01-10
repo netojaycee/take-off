@@ -65,13 +65,13 @@ export function DataTable<TData, TValue>({
         /> */}
         <h2 className="font-bold text-xl">Order</h2>
 
-        <Input
+        {/* <Input
           type="date"
           className="max-w-xs"
           onChange={(event) =>
             table.getColumn("paidAt")?.setFilterValue(event.target.value)
           }
-        />
+        /> */}
       </div>
       <div className="rounded-md border bg-white shadow-md">
         <Table>

@@ -1,32 +1,23 @@
 "use client";
-import { Loader2 } from "lucide-react";
 import React from "react";
-import { SalesLineChart } from "./(components)/SalesLineChart";
 
-import Orders from "../my-orders/page";
-import { TotalSpendingLineChart } from "./(components)/TotalSpendingChart";
 import { SellerEarningsAndSalesLineChart } from "./(components)/charts/EarningsAndSales";
-import { SalesBarChart } from "./(components)/BarChart";
-import { VisitorsPieChart } from "./(components)/PieChart";
 import { RootState } from "@/types";
 import { useSelector } from "react-redux";
 import {
   useGetAnalyticsQuery,
   useGetEarningsVsPayoutsQuery,
   useGetMonthlySummaryQuery,
-  useGetSalesByCatQuery,
+  // useGetSalesByCatQuery,
   useGetWalletBalanceQuery,
 } from "@/redux/appData";
 import Seller from "./(components)/cards/Seller";
 import Buyer from "./(components)/cards/Buyer";
 import Admin from "./(components)/cards/Admin";
 import Loader from "@/components/local/loader";
+import SellerOrders from "../seller/my-items/page";
 
-const backendResponse = {
-  totalSales: [0, 5, 10, 15, 0, 0, 0, 0, 0, 0, 0, 0],
-  totalSpending: [0, 1000, 2000, 1500, 0, 0, 0, 0, 0, 0, 0, 0],
-  totalPlatformEarnings: [0, 1000, 2000, 1500, 0, 0, 0, 0, 0, 0, 0, 0],
-};
+
 
 export default function Dashboard() {
   const userData = useSelector((state: RootState) => state.auth.userData);
@@ -42,7 +33,7 @@ export default function Dashboard() {
 
   const { data: earningsVsPayouts, isLoading: isLoadingEarningsVsPayouts } =
     useGetEarningsVsPayoutsQuery(undefined);
-  console.log("ff", balance && balance);
+  console.log("ff", data && data);
   const role = userData?.role;
 
   return (
@@ -63,7 +54,7 @@ export default function Dashboard() {
           {role === "seller" && <Seller data={data} wallet={wallet} />}
           {/* Buyer Dashboard Cards */}
           {/* Total Spending */}
-          {role === "buyer" && <Buyer data={data} />}
+          {role === "buyer" || role === "seller" && <Buyer data={data} />}
 
           {/* Admin Dashboard Cards */}
           {/* Total Platform Earnings */}
@@ -75,7 +66,7 @@ export default function Dashboard() {
         <Loader />
       ) : (
         <div className="grid grid-cols-1  gap-5">
-          <SellerEarningsAndSalesLineChart role={role} data={backendResponse} />
+          <SellerEarningsAndSalesLineChart role={role} data={monthlyData} />
           {/* <SalesBarChart />
 
           <SalesLineChart />
@@ -83,7 +74,7 @@ export default function Dashboard() {
           <VisitorsPieChart /> */}
         </div>
       )}
-      <Orders />
+      {role === "seller" && <SellerOrders />}
     </div>
   );
 }

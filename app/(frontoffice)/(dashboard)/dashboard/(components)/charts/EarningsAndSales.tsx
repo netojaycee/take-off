@@ -43,7 +43,7 @@ export function SellerEarningsAndSalesLineChart({
     month,
     spending: data.totalSpending[index] || 0,
     sales: data.totalSales[index] || 0,
-    admin: data?.totalPlatformEarnings[index] || 0,
+    admin: data.totalPlatFormSales[index] || 0,
   }));
 
   const sellerConfig = {
