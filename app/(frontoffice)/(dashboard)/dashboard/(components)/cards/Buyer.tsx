@@ -53,7 +53,7 @@ export default function Buyer({ data }: { data: DashboardStats }) {
           <p className="text-sm md:text-base font-medium text-gray-600">
             Pending Deliveries
           </p>
-          <p className="text-lg md:text-2xl font-semibold text-black">{data.pendingDeliveryByBuyer}</p>
+          <p className="text-lg md:text-2xl font-semibold text-black">{data?.pendingDeliveryByBuyer}</p>
         </div>
         {/* <div className="flex items-center justify-center bg-[#F3F4F6] p-2 rounded-full">
     <EllipsisIcon className="text-gray-500 cursor-pointer" />

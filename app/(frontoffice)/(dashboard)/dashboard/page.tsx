@@ -51,22 +51,22 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Seller Dashboard Cards */}
           {/* Wallet */}
-          {role === "seller" && <Seller data={data} wallet={wallet} />}
+          {role === "seller" && <Seller data={data && data} wallet={wallet && wallet} />}
           {/* Buyer Dashboard Cards */}
           {/* Total Spending */}
-          {role === "buyer" || role === "seller" && <Buyer data={data} />}
+          {role === "buyer" || role === "seller" && <Buyer data={data && data} />}
 
           {/* Admin Dashboard Cards */}
           {/* Total Platform Earnings */}
 
-          {role === "admin" && <Admin data={data} />}
+          {role === "admin" && <Admin data={data && data} />}
         </div>
       )}
       {isLoadingSummary ? (
         <Loader />
       ) : (
         <div className="grid grid-cols-1  gap-5">
-          <SellerEarningsAndSalesLineChart role={role} data={monthlyData} />
+          <SellerEarningsAndSalesLineChart role={role} data={monthlyData && monthlyData} />
           {/* <SalesBarChart />
 
           <SalesLineChart />

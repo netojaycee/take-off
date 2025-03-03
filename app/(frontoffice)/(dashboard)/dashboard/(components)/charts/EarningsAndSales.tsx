@@ -41,9 +41,9 @@ export function SellerEarningsAndSalesLineChart({
   // Transforming backend response to match the chart data format
   const sellerData = months.map((month, index) => ({
     month,
-    spending: data.totalSpending[index] || 0,
-    sales: data.totalSales[index] || 0,
-    admin: data.totalPlatFormSales[index] || 0,
+    spending: data?.totalSpending[index] || 0,
+    sales: data?.totalSales[index] || 0,
+    admin: data?.totalPlatFormSales[index] || 0,
   }));
 
   const sellerConfig = {
@@ -74,7 +74,7 @@ export function SellerEarningsAndSalesLineChart({
             style: "currency",
             currency: "NGN",
           }).format(
-            data.totalSpending.reduce(
+            data?.totalSpending.reduce(
               (sum: number, value: number) => sum + value,
               0
             )

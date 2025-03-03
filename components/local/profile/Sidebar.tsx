@@ -135,7 +135,7 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
                 All Categories
               </Link>
             </li>
-            <li
+            {/* <li
               className={`hover:bg-gray-100 py-3 px-10 rounded-md font-[500] ${isActive(
                 ""
               )}`}
@@ -147,8 +147,8 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
               >
                 New Users
               </Link>
-            </li>
-            <li
+            </li> */}
+            {/* <li
               className={`hover:bg-gray-100 py-3 px-10 rounded-md font-[500] ${isActive(
                 ""
               )}`}
@@ -160,8 +160,8 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
               >
                 Dispute
               </Link>
-            </li>
-            <li
+            </li> */}
+            {/* <li
               className={`hover:bg-gray-100 py-3 px-10 rounded-md font-[500] ${isActive(
                 "/"
               )}`}
@@ -173,8 +173,8 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
               >
                 Create Wallet
               </Link>
-            </li>
-            <li
+            </li> */}
+            {/* <li
               className={`hover:bg-gray-100 py-3 px-10 rounded-md font-[500] ${isActive(
                 "/"
               )}`}
@@ -186,7 +186,7 @@ export default function Sidebar({ sheetClose }: { sheetClose?: () => void }) {
               >
                 All Users
               </Link>
-            </li>
+            </li> */}
           </>
         )}
       </ul>
